@@ -20,7 +20,13 @@ import typing as t
 from elastic_transport import ObjectApiResponse
 
 from ._base import NamespacedClient
-from .utils import SKIP_IN_PATH, _quote, _rewrite_parameters
+from .utils import (
+    SKIP_IN_PATH,
+    Stability,
+    _quote,
+    _rewrite_parameters,
+    _stability_warning,
+)
 
 
 class SnapshotClient(NamespacedClient):
@@ -33,15 +39,13 @@ class SnapshotClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Triggers the review of a snapshot repository’s contents and deletes any stale
-        data not referenced by existing snapshots.
+        Clean up the snapshot repository. Trigger the review of the contents of a snapshot
+        repository and delete any stale data not referenced by existing snapshots.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/clean-up-snapshot-repo-api.html>`_
 
@@ -89,15 +93,14 @@ class SnapshotClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Clones indices from one snapshot into another snapshot in the same repository.
+        Clone a snapshot. Clone part of all of a snapshot into another snapshot in the
+        same repository.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
@@ -172,9 +175,7 @@ class SnapshotClient(NamespacedClient):
         ignore_unavailable: t.Optional[bool] = None,
         include_global_state: t.Optional[bool] = None,
         indices: t.Optional[t.Union[str, t.Sequence[str]]] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         metadata: t.Optional[t.Mapping[str, t.Any]] = None,
         partial: t.Optional[bool] = None,
         pretty: t.Optional[bool] = None,
@@ -182,7 +183,7 @@ class SnapshotClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Creates a snapshot in a repository.
+        Create a snapshot. Take a snapshot of a cluster or of data streams and indices.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
@@ -280,15 +281,17 @@ class SnapshotClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         verify: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Creates a repository.
+        Create or update a snapshot repository. IMPORTANT: If you are migrating searchable
+        snapshots, the repository name must be identical in the source and destination
+        clusters. To register a snapshot repository, the cluster's global metadata must
+        be writeable. Ensure there are no cluster blocks (for example, `cluster.blocks.read_only`
+        and `clsuter.blocks.read_only_allow_delete` settings) that prevent write access.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
@@ -344,13 +347,11 @@ class SnapshotClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Deletes one or more snapshots.
+        Delete snapshots.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
@@ -396,14 +397,14 @@ class SnapshotClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Deletes a repository.
+        Delete snapshot repositories. When a repository is unregistered, Elasticsearch
+        removes only the reference to the location where the repository is storing the
+        snapshots. The snapshots themselves are left untouched and in place.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
@@ -454,24 +455,30 @@ class SnapshotClient(NamespacedClient):
         include_repository: t.Optional[bool] = None,
         index_details: t.Optional[bool] = None,
         index_names: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         offset: t.Optional[int] = None,
-        order: t.Optional[t.Union["t.Literal['asc', 'desc']", str]] = None,
+        order: t.Optional[t.Union[str, t.Literal["asc", "desc"]]] = None,
         pretty: t.Optional[bool] = None,
         size: t.Optional[int] = None,
         slm_policy_filter: t.Optional[str] = None,
         sort: t.Optional[
             t.Union[
-                "t.Literal['duration', 'failed_shard_count', 'index_count', 'name', 'repository', 'shard_count', 'start_time']",
                 str,
+                t.Literal[
+                    "duration",
+                    "failed_shard_count",
+                    "index_count",
+                    "name",
+                    "repository",
+                    "shard_count",
+                    "start_time",
+                ],
             ]
         ] = None,
         verbose: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Returns information about a snapshot.
+        Get snapshot information.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
@@ -579,13 +586,11 @@ class SnapshotClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
         local: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Returns information about a repository.
+        Get snapshot repository information.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
@@ -624,6 +629,118 @@ class SnapshotClient(NamespacedClient):
             path_parts=__path_parts,
         )
 
+    @_rewrite_parameters()
+    @_stability_warning(Stability.EXPERIMENTAL)
+    def repository_verify_integrity(
+        self,
+        *,
+        name: t.Union[str, t.Sequence[str]],
+        blob_thread_pool_concurrency: t.Optional[int] = None,
+        error_trace: t.Optional[bool] = None,
+        filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
+        human: t.Optional[bool] = None,
+        index_snapshot_verification_concurrency: t.Optional[int] = None,
+        index_verification_concurrency: t.Optional[int] = None,
+        max_bytes_per_sec: t.Optional[str] = None,
+        max_failed_shard_snapshots: t.Optional[int] = None,
+        meta_thread_pool_concurrency: t.Optional[int] = None,
+        pretty: t.Optional[bool] = None,
+        snapshot_verification_concurrency: t.Optional[int] = None,
+        verify_blob_contents: t.Optional[bool] = None,
+    ) -> ObjectApiResponse[t.Any]:
+        """
+        Verify the repository integrity. Verify the integrity of the contents of a snapshot
+        repository. This API enables you to perform a comprehensive check of the contents
+        of a repository, looking for any anomalies in its data or metadata which might
+        prevent you from restoring snapshots from the repository or which might cause
+        future snapshot create or delete operations to fail. If you suspect the integrity
+        of the contents of one of your snapshot repositories, cease all write activity
+        to this repository immediately, set its `read_only` option to `true`, and use
+        this API to verify its integrity. Until you do so: * It may not be possible to
+        restore some snapshots from this repository. * Searchable snapshots may report
+        errors when searched or may have unassigned shards. * Taking snapshots into this
+        repository may fail or may appear to succeed but have created a snapshot which
+        cannot be restored. * Deleting snapshots from this repository may fail or may
+        appear to succeed but leave the underlying data on disk. * Continuing to write
+        to the repository while it is in an invalid state may causing additional damage
+        to its contents. If the API finds any problems with the integrity of the contents
+        of your repository, Elasticsearch will not be able to repair the damage. The
+        only way to bring the repository back into a fully working state after its contents
+        have been damaged is by restoring its contents from a repository backup which
+        was taken before the damage occurred. You must also identify what caused the
+        damage and take action to prevent it from happening again. If you cannot restore
+        a repository backup, register a new repository and use this for all future snapshot
+        operations. In some cases it may be possible to recover some of the contents
+        of a damaged repository, either by restoring as many of its snapshots as needed
+        and taking new snapshots of the restored data, or by using the reindex API to
+        copy data from any searchable snapshots mounted from the damaged repository.
+        Avoid all operations which write to the repository while the verify repository
+        integrity API is running. If something changes the repository contents while
+        an integrity verification is running then Elasticsearch may incorrectly report
+        having detected some anomalies in its contents due to the concurrent writes.
+        It may also incorrectly fail to report some anomalies that the concurrent writes
+        prevented it from detecting. NOTE: This API is intended for exploratory use by
+        humans. You should expect the request parameters and the response format to vary
+        in future versions. NOTE: This API may not work correctly in a mixed-version
+        cluster.
+
+        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
+
+        :param name: A repository name
+        :param blob_thread_pool_concurrency: Number of threads to use for reading blob
+            contents
+        :param index_snapshot_verification_concurrency: Number of snapshots to verify
+            concurrently within each index
+        :param index_verification_concurrency: Number of indices to verify concurrently
+        :param max_bytes_per_sec: Rate limit for individual blob verification
+        :param max_failed_shard_snapshots: Maximum permitted number of failed shard snapshots
+        :param meta_thread_pool_concurrency: Number of threads to use for reading metadata
+        :param snapshot_verification_concurrency: Number of snapshots to verify concurrently
+        :param verify_blob_contents: Whether to verify the contents of individual blobs
+        """
+        if name in SKIP_IN_PATH:
+            raise ValueError("Empty value passed for parameter 'name'")
+        __path_parts: t.Dict[str, str] = {"repository": _quote(name)}
+        __path = f'/_snapshot/{__path_parts["repository"]}/_verify_integrity'
+        __query: t.Dict[str, t.Any] = {}
+        if blob_thread_pool_concurrency is not None:
+            __query["blob_thread_pool_concurrency"] = blob_thread_pool_concurrency
+        if error_trace is not None:
+            __query["error_trace"] = error_trace
+        if filter_path is not None:
+            __query["filter_path"] = filter_path
+        if human is not None:
+            __query["human"] = human
+        if index_snapshot_verification_concurrency is not None:
+            __query["index_snapshot_verification_concurrency"] = (
+                index_snapshot_verification_concurrency
+            )
+        if index_verification_concurrency is not None:
+            __query["index_verification_concurrency"] = index_verification_concurrency
+        if max_bytes_per_sec is not None:
+            __query["max_bytes_per_sec"] = max_bytes_per_sec
+        if max_failed_shard_snapshots is not None:
+            __query["max_failed_shard_snapshots"] = max_failed_shard_snapshots
+        if meta_thread_pool_concurrency is not None:
+            __query["meta_thread_pool_concurrency"] = meta_thread_pool_concurrency
+        if pretty is not None:
+            __query["pretty"] = pretty
+        if snapshot_verification_concurrency is not None:
+            __query["snapshot_verification_concurrency"] = (
+                snapshot_verification_concurrency
+            )
+        if verify_blob_contents is not None:
+            __query["verify_blob_contents"] = verify_blob_contents
+        __headers = {"accept": "application/json"}
+        return self.perform_request(  # type: ignore[return-value]
+            "POST",
+            __path,
+            params=__query,
+            headers=__headers,
+            endpoint_id="snapshot.repository_verify_integrity",
+            path_parts=__path_parts,
+        )
+
     @_rewrite_parameters(
         body_fields=(
             "feature_states",
@@ -653,9 +770,7 @@ class SnapshotClient(NamespacedClient):
         include_global_state: t.Optional[bool] = None,
         index_settings: t.Optional[t.Mapping[str, t.Any]] = None,
         indices: t.Optional[t.Union[str, t.Sequence[str]]] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         partial: t.Optional[bool] = None,
         pretty: t.Optional[bool] = None,
         rename_pattern: t.Optional[str] = None,
@@ -664,7 +779,20 @@ class SnapshotClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Restores a snapshot.
+        Restore a snapshot. Restore a snapshot of a cluster or data streams and indices.
+        You can restore a snapshot only to a running cluster with an elected master node.
+        The snapshot repository must be registered and available to the cluster. The
+        snapshot and cluster versions must be compatible. To restore a snapshot, the
+        cluster's global metadata must be writable. Ensure there are't any cluster blocks
+        that prevent writes. The restore operation ignores index blocks. Before you restore
+        a data stream, ensure the cluster contains a matching index template with data
+        streams enabled. To check, use the index management feature in Kibana or the
+        get index template API: ``` GET _index_template/*?filter_path=index_templates.name,index_templates.index_template.index_patterns,index_templates.index_template.data_stream
+        ``` If no such template exists, you can create one or restore a cluster state
+        that contains one. Without a matching index template, a data stream can't roll
+        over or create backing indices. If your snapshot contains data from App Search
+        or Workplace Search, you must restore the Enterprise Search encryption key before
+        you restore the snapshot.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
@@ -753,13 +881,22 @@ class SnapshotClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
         ignore_unavailable: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Returns information about the status of a snapshot.
+        Get the snapshot status. Get a detailed description of the current state for
+        each shard participating in the snapshot. Note that this API should be used only
+        to obtain detailed shard-level information for ongoing snapshots. If this detail
+        is not needed or you want to obtain information about one or more existing snapshots,
+        use the get snapshot API. WARNING: Using the API to return the status of any
+        snapshots other than currently running snapshots can be expensive. The API requires
+        a read from the repository for each shard in each snapshot. For example, if you
+        have 100 snapshots with 1,000 shards each, an API request that includes all snapshots
+        will require 100,000 reads (100 snapshots x 1,000 shards). Depending on the latency
+        of your storage, such requests can take an extremely long time to return results.
+        These requests can also tax machine resources and, when using cloud storage,
+        incur high processing costs.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
@@ -813,14 +950,13 @@ class SnapshotClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Verifies a repository.
+        Verify a snapshot repository. Check for common misconfigurations in a snapshot
+        repository.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 

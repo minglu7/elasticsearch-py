@@ -20,12 +20,19 @@ import typing as t
 from elastic_transport import ObjectApiResponse
 
 from ._base import NamespacedClient
-from .utils import SKIP_IN_PATH, _quote, _rewrite_parameters
+from .utils import (
+    SKIP_IN_PATH,
+    Stability,
+    _quote,
+    _rewrite_parameters,
+    _stability_warning,
+)
 
 
 class SearchableSnapshotsClient(NamespacedClient):
 
     @_rewrite_parameters()
+    @_stability_warning(Stability.EXPERIMENTAL)
     def cache_stats(
         self,
         *,
@@ -33,13 +40,12 @@ class SearchableSnapshotsClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Retrieve node-level cache statistics about searchable snapshots.
+        Get cache statistics. Get statistics about the shared cache for partially mounted
+        indices.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-apis.html>`_
 
@@ -77,6 +83,7 @@ class SearchableSnapshotsClient(NamespacedClient):
         )
 
     @_rewrite_parameters()
+    @_stability_warning(Stability.EXPERIMENTAL)
     def clear_cache(
         self,
         *,
@@ -86,9 +93,9 @@ class SearchableSnapshotsClient(NamespacedClient):
         expand_wildcards: t.Optional[
             t.Union[
                 t.Sequence[
-                    t.Union["t.Literal['all', 'closed', 'hidden', 'none', 'open']", str]
+                    t.Union[str, t.Literal["all", "closed", "hidden", "none", "open"]]
                 ],
-                t.Union["t.Literal['all', 'closed', 'hidden', 'none', 'open']", str],
+                t.Union[str, t.Literal["all", "closed", "hidden", "none", "open"]],
             ]
         ] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
@@ -97,7 +104,8 @@ class SearchableSnapshotsClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Clear the cache of searchable snapshots.
+        Clear the cache. Clear indices and data streams from the shared cache for partially
+        mounted indices.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-apis.html>`_
 
@@ -161,9 +169,7 @@ class SearchableSnapshotsClient(NamespacedClient):
         human: t.Optional[bool] = None,
         ignore_index_settings: t.Optional[t.Sequence[str]] = None,
         index_settings: t.Optional[t.Mapping[str, t.Any]] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
         renamed_index: t.Optional[str] = None,
         storage: t.Optional[str] = None,
@@ -171,7 +177,9 @@ class SearchableSnapshotsClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Mount a snapshot as a searchable index.
+        Mount a snapshot. Mount a snapshot as a searchable snapshot index. Do not use
+        this API for snapshots managed by index lifecycle management (ILM). Manually
+        mounting ILM-managed snapshots can interfere with ILM processes.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-api-mount-snapshot.html>`_
 
@@ -246,12 +254,12 @@ class SearchableSnapshotsClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
         level: t.Optional[
-            t.Union["t.Literal['cluster', 'indices', 'shards']", str]
+            t.Union[str, t.Literal["cluster", "indices", "shards"]]
         ] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Retrieve shard-level statistics about searchable snapshots.
+        Get searchable snapshot statistics.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-apis.html>`_
 

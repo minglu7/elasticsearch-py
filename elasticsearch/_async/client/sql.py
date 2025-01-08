@@ -39,7 +39,7 @@ class SqlClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Clears the SQL cursor
+        Clear an SQL search cursor.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/clear-sql-cursor-api.html>`_
 
@@ -84,8 +84,8 @@ class SqlClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Deletes an async SQL search or a stored synchronous SQL search. If the search
-        is still running, the API cancels it.
+        Delete an async SQL search. Delete an async SQL search or a stored synchronous
+        SQL search. If the search is still running, the API cancels it.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-async-sql-search-api.html>`_
 
@@ -124,15 +124,15 @@ class SqlClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         format: t.Optional[str] = None,
         human: t.Optional[bool] = None,
-        keep_alive: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        keep_alive: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
         wait_for_completion_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
+            t.Union[str, t.Literal[-1], t.Literal[0]]
         ] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Returns the current status and available results for an async SQL search or stored
-        synchronous SQL search
+        Get async SQL search results. Get the current status and available results for
+        an async SQL search or stored synchronous SQL search.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-async-sql-search-api.html>`_
 
@@ -189,8 +189,8 @@ class SqlClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Returns the current status of an async SQL search or a stored synchronous SQL
-        search
+        Get the async SQL search status. Get the current status of an async SQL search
+        or a stored synchronous SQL search.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-async-sql-search-status-api.html>`_
 
@@ -251,27 +251,29 @@ class SqlClient(NamespacedClient):
         field_multi_value_leniency: t.Optional[bool] = None,
         filter: t.Optional[t.Mapping[str, t.Any]] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
-        format: t.Optional[str] = None,
+        format: t.Optional[
+            t.Union[
+                str, t.Literal["cbor", "csv", "json", "smile", "tsv", "txt", "yaml"]
+            ]
+        ] = None,
         human: t.Optional[bool] = None,
         index_using_frozen: t.Optional[bool] = None,
-        keep_alive: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        keep_alive: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         keep_on_completion: t.Optional[bool] = None,
-        page_timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        page_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         params: t.Optional[t.Mapping[str, t.Any]] = None,
         pretty: t.Optional[bool] = None,
         query: t.Optional[str] = None,
-        request_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        request_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         runtime_mappings: t.Optional[t.Mapping[str, t.Mapping[str, t.Any]]] = None,
         time_zone: t.Optional[str] = None,
         wait_for_completion_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
+            t.Union[str, t.Literal[-1], t.Literal[0]]
         ] = None,
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Executes a SQL request
+        Get SQL search results. Run an SQL request.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/sql-search-api.html>`_
 
@@ -381,7 +383,8 @@ class SqlClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Translates SQL into Elasticsearch queries
+        Translate SQL into Elasticsearch queries. Translate an SQL search into a search
+        API request containing Query DSL.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/sql-translate-api.html>`_
 

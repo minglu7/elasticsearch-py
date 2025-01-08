@@ -34,20 +34,22 @@ class DanglingIndicesClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Deletes the specified dangling index
+        Delete a dangling index. If Elasticsearch encounters index data that is absent
+        from the current cluster state, those indices are considered to be dangling.
+        For example, this can happen if you delete more than `cluster.indices.tombstones.size`
+        indices while an Elasticsearch node is offline.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-gateway-dangling-indices.html>`_
 
-        :param index_uuid: The UUID of the dangling index
-        :param accept_data_loss: Must be set to true in order to delete the dangling
-            index
+        :param index_uuid: The UUID of the index to delete. Use the get dangling indices
+            API to find the UUID.
+        :param accept_data_loss: This parameter must be set to true to acknowledge that
+            it will no longer be possible to recove data from the dangling index.
         :param master_timeout: Specify timeout for connection to master
         :param timeout: Explicit operation timeout
         """
@@ -91,20 +93,25 @@ class DanglingIndicesClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Imports the specified dangling index
+        Import a dangling index. If Elasticsearch encounters index data that is absent
+        from the current cluster state, those indices are considered to be dangling.
+        For example, this can happen if you delete more than `cluster.indices.tombstones.size`
+        indices while an Elasticsearch node is offline.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-gateway-dangling-indices.html>`_
 
-        :param index_uuid: The UUID of the dangling index
-        :param accept_data_loss: Must be set to true in order to import the dangling
-            index
+        :param index_uuid: The UUID of the index to import. Use the get dangling indices
+            API to locate the UUID.
+        :param accept_data_loss: This parameter must be set to true to import a dangling
+            index. Because Elasticsearch cannot know where the dangling index data came
+            from or determine which shard copies are fresh and which are stale, it cannot
+            guarantee that the imported data represents the latest state of the index
+            when it was last in the cluster.
         :param master_timeout: Specify timeout for connection to master
         :param timeout: Explicit operation timeout
         """
@@ -149,7 +156,11 @@ class DanglingIndicesClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Returns all dangling indices.
+        Get the dangling indices. If Elasticsearch encounters index data that is absent
+        from the current cluster state, those indices are considered to be dangling.
+        For example, this can happen if you delete more than `cluster.indices.tombstones.size`
+        indices while an Elasticsearch node is offline. Use this API to list dangling
+        indices, which you can then import or delete.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-gateway-dangling-indices.html>`_
         """

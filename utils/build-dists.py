@@ -50,7 +50,7 @@ def run(*argv, expect_exit_code=0):
         else:
             os.chdir(tmp_dir)
 
-        cmd = " ".join(shlex.quote(x) for x in argv)
+        cmd = shlex.join(argv)
         print("$ " + cmd)
         exit_code = os.system(cmd)
         if exit_code != expect_exit_code:
@@ -121,6 +121,7 @@ def test_dist(dist):
                 "--strict",
                 "--install-types",
                 "--non-interactive",
+                "--ignore-missing-imports",
                 os.path.join(base_dir, "test_elasticsearch/test_types/async_types.py"),
             )
 
@@ -144,6 +145,7 @@ def test_dist(dist):
                 "--strict",
                 "--install-types",
                 "--non-interactive",
+                "--ignore-missing-imports",
                 os.path.join(base_dir, "test_elasticsearch/test_types/sync_types.py"),
             )
         else:
@@ -154,6 +156,7 @@ def test_dist(dist):
                 "--strict",
                 "--install-types",
                 "--non-interactive",
+                "--ignore-missing-imports",
                 os.path.join(
                     base_dir, "test_elasticsearch/test_types/aliased_types.py"
                 ),

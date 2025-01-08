@@ -33,6 +33,7 @@ from elasticsearch.helpers.vectorstore import (
     VectorStore,
 )
 from elasticsearch.helpers.vectorstore._sync._utils import model_is_deployed
+from test_elasticsearch.utils import es_version
 
 from . import ConsistentFakeEmbeddings, FakeEmbeddings
 
@@ -72,7 +73,7 @@ class TestVectorStore:
                     "filter": [],
                     "k": 1,
                     "num_candidates": 50,
-                    "query_vector": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0],
+                    "query_vector": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0],
                 }
             }
             return query_body
@@ -80,7 +81,7 @@ class TestVectorStore:
         store = VectorStore(
             index=index,
             retrieval_strategy=DenseVectorStrategy(),
-            embedding_service=FakeEmbeddings(),
+            embedding_service=ConsistentFakeEmbeddings(),
             client=sync_client,
         )
 
@@ -97,7 +98,7 @@ class TestVectorStore:
         store = VectorStore(
             index=index,
             retrieval_strategy=DenseVectorStrategy(),
-            embedding_service=FakeEmbeddings(),
+            embedding_service=ConsistentFakeEmbeddings(),
             client=sync_client,
         )
 
@@ -337,6 +338,9 @@ class TestVectorStore:
         self, sync_client: Elasticsearch, index: str
     ) -> None:
         """Test end to end construction and search with metadata."""
+        if es_version(sync_client) < (8, 14):
+            pytest.skip("This test requires Elasticsearch 8.14 or newer")
+
         store = VectorStore(
             index=index,
             retrieval_strategy=DenseVectorStrategy(hybrid=True),
@@ -349,20 +353,48 @@ class TestVectorStore:
 
         def assert_query(query_body: dict, query: Optional[str]) -> dict:
             assert query_body == {
-                "knn": {
-                    "field": "vector_field",
-                    "filter": [],
-                    "k": 1,
-                    "num_candidates": 50,
-                    "query_vector": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0],
-                },
-                "query": {
-                    "bool": {
-                        "filter": [],
-                        "must": [{"match": {"text_field": {"query": "foo"}}}],
+                "retriever": {
+                    "rrf": {
+                        "retrievers": [
+                            {
+                                "standard": {
+                                    "query": {
+                                        "bool": {
+                                            "filter": [],
+                                            "must": [
+                                                {
+                                                    "match": {
+                                                        "text_field": {"query": "foo"}
+                                                    }
+                                                }
+                                            ],
+                                        }
+                                    },
+                                },
+                            },
+                            {
+                                "knn": {
+                                    "field": "vector_field",
+                                    "filter": [],
+                                    "k": 1,
+                                    "num_candidates": 50,
+                                    "query_vector": [
+                                        1.0,
+                                        1.0,
+                                        1.0,
+                                        1.0,
+                                        1.0,
+                                        1.0,
+                                        1.0,
+                                        1.0,
+                                        1.0,
+                                        0.0,
+                                    ],
+                                },
+                            },
+                        ],
                     }
-                },
-                "rank": {"rrf": {}},
+                }
             }
             return query_body
 
@@ -373,6 +405,9 @@ class TestVectorStore:
         self, sync_client: Elasticsearch, index: str
     ) -> None:
         """Test end to end construction and rrf hybrid search with metadata."""
+        if es_version(sync_client) < (8, 14):
+            pytest.skip("This test requires Elasticsearch 8.14 or newer")
+
         texts = ["foo", "bar", "baz"]
 
         def assert_query(
@@ -380,48 +415,67 @@ class TestVectorStore:
             query: Optional[str],
             expected_rrf: Union[dict, bool],
         ) -> dict:
-            cmp_query_body = {
-                "knn": {
-                    "field": "vector_field",
-                    "filter": [],
-                    "k": 3,
-                    "num_candidates": 50,
-                    "query_vector": [
-                        1.0,
-                        1.0,
-                        1.0,
-                        1.0,
-                        1.0,
-                        1.0,
-                        1.0,
-                        1.0,
-                        1.0,
-                        0.0,
-                    ],
-                },
+            standard_query = {
                 "query": {
                     "bool": {
                         "filter": [],
                         "must": [{"match": {"text_field": {"query": "foo"}}}],
                     }
-                },
+                }
+            }
+            knn_query = {
+                "field": "vector_field",
+                "filter": [],
+                "k": 3,
+                "num_candidates": 50,
+                "query_vector": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0,
+                ],
             }
 
-            if isinstance(expected_rrf, dict):
-                cmp_query_body["rank"] = {"rrf": expected_rrf}
-            elif isinstance(expected_rrf, bool) and expected_rrf is True:
-                cmp_query_body["rank"] = {"rrf": {}}
+            if expected_rrf is not False:
+                cmp_query_body = {
+                    "retriever": {
+                        "rrf": {
+                            "retrievers": [
+                                {"standard": standard_query},
+                                {"knn": knn_query},
+                            ],
+                        }
+                    }
+                }
+                if isinstance(expected_rrf, dict):
+                    cmp_query_body["retriever"]["rrf"].update(expected_rrf)
+            else:
+                cmp_query_body = {
+                    "knn": knn_query,
+                    **standard_query,
+                }
 
             assert query_body == cmp_query_body
 
             return query_body
 
         # 1. check query_body is okay
-        rrf_test_cases: List[Union[dict, bool]] = [
-            True,
-            False,
-            {"rank_constant": 1, "window_size": 5},
-        ]
+        if es_version(sync_client) >= (8, 14):
+            rrf_test_cases: List[Union[dict, bool]] = [
+                True,
+                False,
+                {"rank_constant": 1, "rank_window_size": 5},
+            ]
+        else:
+            # for 8.13.x and older there is no retriever query, so we can only
+            # run hybrid searches with rrf=False
+            rrf_test_cases: List[Union[dict, bool]] = [False]
         for rrf_test_case in rrf_test_cases:
             store = VectorStore(
                 index=index,
@@ -441,21 +495,47 @@ class TestVectorStore:
         # 2. check query result is okay
         es_output = store.client.search(
             index=index,
-            query={
-                "bool": {
-                    "filter": [],
-                    "must": [{"match": {"text_field": {"query": "foo"}}}],
+            retriever={
+                "rrf": {
+                    "retrievers": [
+                        {
+                            "knn": {
+                                "field": "vector_field",
+                                "filter": [],
+                                "k": 3,
+                                "num_candidates": 50,
+                                "query_vector": [
+                                    1.0,
+                                    1.0,
+                                    1.0,
+                                    1.0,
+                                    1.0,
+                                    1.0,
+                                    1.0,
+                                    1.0,
+                                    1.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                        {
+                            "standard": {
+                                "query": {
+                                    "bool": {
+                                        "filter": [],
+                                        "must": [
+                                            {"match": {"text_field": {"query": "foo"}}}
+                                        ],
+                                    }
+                                },
+                            },
+                        },
+                    ],
+                    "rank_constant": 1,
+                    "rank_window_size": 5,
                 }
             },
-            knn={
-                "field": "vector_field",
-                "filter": [],
-                "k": 3,
-                "num_candidates": 50,
-                "query_vector": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0],
-            },
             size=3,
-            rank={"rrf": {"rank_constant": 1, "window_size": 5}},
         )
 
         assert [o["_source"]["text_field"] for o in output] == [
@@ -815,6 +895,47 @@ class TestVectorStore:
         # 1 for index exist, 1 for index create, 3 to index docs
         assert len(store.client.transport.requests) == 5  # type: ignore
 
+    def test_max_marginal_relevance_search_errors(
+        self, sync_client: Elasticsearch, index: str
+    ) -> None:
+        """Test max marginal relevance search error conditions."""
+        texts = ["foo", "bar", "baz"]
+        vector_field = "vector_field"
+        embedding_service = ConsistentFakeEmbeddings()
+        store = VectorStore(
+            index=index,
+            retrieval_strategy=DenseVectorScriptScoreStrategy(),
+            embedding_service=embedding_service,
+            client=sync_client,
+        )
+        store.add_texts(texts)
+
+        # search without query embeddings vector or query
+        with pytest.raises(
+            ValueError, match="specify either query or query_embedding to search"
+        ):
+            store.max_marginal_relevance_search(
+                vector_field=vector_field,
+                k=3,
+                num_candidates=3,
+            )
+
+        # search without service
+        no_service_store = VectorStore(
+            index=index,
+            retrieval_strategy=DenseVectorScriptScoreStrategy(),
+            client=sync_client,
+        )
+        with pytest.raises(
+            ValueError, match="specify embedding_service to search with query"
+        ):
+            no_service_store.max_marginal_relevance_search(
+                query=texts[0],
+                vector_field=vector_field,
+                k=3,
+                num_candidates=3,
+            )
+
     def test_max_marginal_relevance_search(
         self, sync_client: Elasticsearch, index: str
     ) -> None:
@@ -822,6 +943,7 @@ class TestVectorStore:
         texts = ["foo", "bar", "baz"]
         vector_field = "vector_field"
         text_field = "text_field"
+        query_embedding = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0]
         embedding_service = ConsistentFakeEmbeddings()
         store = VectorStore(
             index=index,
@@ -833,8 +955,8 @@ class TestVectorStore:
         )
         store.add_texts(texts)
 
+        # search with query
         mmr_output = store.max_marginal_relevance_search(
-            embedding_service=embedding_service,
             query=texts[0],
             vector_field=vector_field,
             k=3,
@@ -843,8 +965,17 @@ class TestVectorStore:
         sim_output = store.search(query=texts[0], k=3)
         assert mmr_output == sim_output
 
+        # search with query embeddings
         mmr_output = store.max_marginal_relevance_search(
-            embedding_service=embedding_service,
+            query_embedding=query_embedding,
+            vector_field=vector_field,
+            k=3,
+            num_candidates=3,
+        )
+        sim_output = store.search(query_vector=query_embedding, k=3)
+        assert mmr_output == sim_output
+
+        mmr_output = store.max_marginal_relevance_search(
             query=texts[0],
             vector_field=vector_field,
             k=2,
@@ -855,7 +986,6 @@ class TestVectorStore:
         assert mmr_output[1]["_source"][text_field] == texts[1]
 
         mmr_output = store.max_marginal_relevance_search(
-            embedding_service=embedding_service,
             query=texts[0],
             vector_field=vector_field,
             k=2,
@@ -868,7 +998,6 @@ class TestVectorStore:
 
         # if fetch_k < k, then the output will be less than k
         mmr_output = store.max_marginal_relevance_search(
-            embedding_service=embedding_service,
             query=texts[0],
             vector_field=vector_field,
             k=3,
@@ -901,6 +1030,11 @@ class TestVectorStore:
             "type": "dense_vector",
             "dims": 10,
             "index": True,
+            "index_options": {
+                "ef_construction": 100,
+                "m": 16,
+                "type": "int8_hnsw",
+            },
             "similarity": "cosine",
         }
 

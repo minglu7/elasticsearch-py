@@ -20,12 +20,19 @@ import typing as t
 from elastic_transport import ObjectApiResponse, TextApiResponse
 
 from ._base import NamespacedClient
-from .utils import SKIP_IN_PATH, _quote, _rewrite_parameters
+from .utils import (
+    SKIP_IN_PATH,
+    Stability,
+    _quote,
+    _rewrite_parameters,
+    _stability_warning,
+)
 
 
 class NodesClient(NamespacedClient):
 
     @_rewrite_parameters()
+    @_stability_warning(Stability.EXPERIMENTAL)
     def clear_repositories_metering_archive(
         self,
         *,
@@ -37,8 +44,8 @@ class NodesClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        You can use this API to clear the archived repositories metering information
-        in the cluster.
+        Clear the archived repositories metering. Clear the archived repositories metering
+        information in the cluster.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/clear-repositories-metering-archive-api.html>`_
 
@@ -76,6 +83,7 @@ class NodesClient(NamespacedClient):
         )
 
     @_rewrite_parameters()
+    @_stability_warning(Stability.EXPERIMENTAL)
     def get_repositories_metering_info(
         self,
         *,
@@ -86,11 +94,11 @@ class NodesClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        You can use the cluster repositories metering API to retrieve repositories metering
-        information in a cluster. This API exposes monotonically non-decreasing counters
-        and it’s expected that clients would durably store the information needed to
-        compute aggregations over a period of time. Additionally, the information exposed
-        by this API is volatile, meaning that it won’t be present after node restarts.
+        Get cluster repositories metering. Get repositories metering information for
+        a cluster. This API exposes monotonically non-decreasing counters and it is expected
+        that clients would durably store the information needed to compute aggregations
+        over a period of time. Additionally, the information exposed by this API is volatile,
+        meaning that it will not be present after node restarts.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-repositories-metering-api.html>`_
 
@@ -129,24 +137,23 @@ class NodesClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
         ignore_idle_threads: t.Optional[bool] = None,
-        interval: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        interval: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
         snapshots: t.Optional[int] = None,
         sort: t.Optional[
-            t.Union["t.Literal['block', 'cpu', 'gpu', 'mem', 'wait']", str]
+            t.Union[str, t.Literal["block", "cpu", "gpu", "mem", "wait"]]
         ] = None,
         threads: t.Optional[int] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         type: t.Optional[
-            t.Union["t.Literal['block', 'cpu', 'gpu', 'mem', 'wait']", str]
+            t.Union[str, t.Literal["block", "cpu", "gpu", "mem", "wait"]]
         ] = None,
     ) -> TextApiResponse:
         """
-        This API yields a breakdown of the hot threads on each selected node in the cluster.
-        The output is plain text with a breakdown of each node’s top hot threads.
+        Get the hot threads for nodes. Get a breakdown of the hot threads on each selected
+        node in the cluster. The output is plain text with a breakdown of the top hot
+        threads for each node.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-hot-threads.html>`_
 
@@ -216,14 +223,13 @@ class NodesClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         flat_settings: t.Optional[bool] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Returns cluster nodes information.
+        Get node information. By default, the API returns all attributes and core settings
+        for cluster nodes.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-info.html>`_
 
@@ -288,11 +294,22 @@ class NodesClient(NamespacedClient):
         human: t.Optional[bool] = None,
         pretty: t.Optional[bool] = None,
         secure_settings_password: t.Optional[str] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Reloads the keystore on nodes in the cluster.
+        Reload the keystore on nodes in the cluster. Secure settings are stored in an
+        on-disk keystore. Certain of these settings are reloadable. That is, you can
+        change them on disk and reload them without restarting any nodes in the cluster.
+        When you have updated reloadable secure settings in your keystore, you can use
+        this API to reload those settings on each node. When the Elasticsearch keystore
+        is password protected and not simply obfuscated, you must provide the password
+        for the keystore when you reload the secure settings. Reloading the settings
+        for the whole cluster assumes that the keystores for all nodes are protected
+        with the same password; this method is allowed only when inter-node communications
+        are encrypted. Alternatively, you can reload the secure settings on each node
+        by locally accessing the API and passing the node-specific Elasticsearch keystore
+        password.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/secure-settings.html#reloadable-secure-settings>`_
 
@@ -355,17 +372,16 @@ class NodesClient(NamespacedClient):
         include_segment_file_sizes: t.Optional[bool] = None,
         include_unloaded_segments: t.Optional[bool] = None,
         level: t.Optional[
-            t.Union["t.Literal['cluster', 'indices', 'shards']", str]
+            t.Union[str, t.Literal["cluster", "indices", "shards"]]
         ] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         types: t.Optional[t.Sequence[str]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Returns cluster nodes statistics.
+        Get node statistics. Get statistics for nodes in a cluster. By default, all stats
+        are returned. You can limit the returned information by using metrics.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-stats.html>`_
 
@@ -479,10 +495,10 @@ class NodesClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Returns information on the usage of features.
+        Get feature usage information.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-usage.html>`_
 

@@ -34,14 +34,19 @@ class XPackClient(NamespacedClient):
         self,
         *,
         accept_enterprise: t.Optional[bool] = None,
-        categories: t.Optional[t.Sequence[str]] = None,
+        categories: t.Optional[
+            t.Sequence[t.Union[str, t.Literal["build", "features", "license"]]]
+        ] = None,
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Provides general information about the installed X-Pack features.
+        Get information. The information provided by the API includes: * Build information
+        including the build number and timestamp. * License information about the currently
+        installed license. * Feature information for the features that are currently
+        enabled and available under the current license.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/info-api.html>`_
 
@@ -81,14 +86,13 @@ class XPackClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        This API provides information about which features are currently enabled and
-        available under the current license and some usage statistics.
+        Get usage information. Get information about the features that are currently
+        enabled and available under the current license. The API also provides some usage
+        statistics.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/usage-api.html>`_
 

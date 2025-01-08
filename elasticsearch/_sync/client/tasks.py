@@ -20,12 +20,19 @@ import typing as t
 from elastic_transport import ObjectApiResponse
 
 from ._base import NamespacedClient
-from .utils import SKIP_IN_PATH, _quote, _rewrite_parameters
+from .utils import (
+    SKIP_IN_PATH,
+    Stability,
+    _quote,
+    _rewrite_parameters,
+    _stability_warning,
+)
 
 
 class TasksClient(NamespacedClient):
 
     @_rewrite_parameters()
+    @_stability_warning(Stability.EXPERIMENTAL)
     def cancel(
         self,
         *,
@@ -40,7 +47,17 @@ class TasksClient(NamespacedClient):
         wait_for_completion: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Cancels a task, if it can be cancelled through an API.
+        Cancel a task. A task may continue to run for some time after it has been cancelled
+        because it may not be able to safely stop its current activity straight away.
+        It is also possible that Elasticsearch must complete its work on other tasks
+        before it can process the cancellation. The get task information API will continue
+        to list these cancelled tasks until they complete. The cancelled flag in the
+        response indicates that the cancellation command has been processed and the task
+        will stop as soon as possible. To troubleshoot why a cancelled task does not
+        complete promptly, use the get task information API with the `?detailed` parameter
+        to identify the other tasks the system is running. You can also use the node
+        hot threads API to obtain detailed information about the work the system is doing
+        instead of completing the cancelled task.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/tasks.html>`_
 
@@ -87,6 +104,7 @@ class TasksClient(NamespacedClient):
         )
 
     @_rewrite_parameters()
+    @_stability_warning(Stability.EXPERIMENTAL)
     def get(
         self,
         *,
@@ -95,11 +113,11 @@ class TasksClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         wait_for_completion: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Returns information about a task.
+        Get task information. Get information about a task currently running in the cluster.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/tasks.html>`_
 
@@ -137,6 +155,7 @@ class TasksClient(NamespacedClient):
         )
 
     @_rewrite_parameters()
+    @_stability_warning(Stability.EXPERIMENTAL)
     def list(
         self,
         *,
@@ -145,33 +164,32 @@ class TasksClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         group_by: t.Optional[
-            t.Union["t.Literal['nodes', 'none', 'parents']", str]
+            t.Union[str, t.Literal["nodes", "none", "parents"]]
         ] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[
-            t.Union["t.Literal[-1]", "t.Literal[0]", str]
-        ] = None,
-        node_id: t.Optional[t.Sequence[str]] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
+        nodes: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         parent_task_id: t.Optional[str] = None,
         pretty: t.Optional[bool] = None,
-        timeout: t.Optional[t.Union["t.Literal[-1]", "t.Literal[0]", str]] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         wait_for_completion: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        The task management API returns information about tasks currently executing on
-        one or more nodes in the cluster.
+        Get all tasks. Get information about the tasks currently running on one or more
+        nodes in the cluster.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/tasks.html>`_
 
         :param actions: Comma-separated list or wildcard expression of actions used to
             limit the request.
         :param detailed: If `true`, the response includes detailed information about
-            shard recoveries.
+            shard recoveries. This information is useful to distinguish tasks from each
+            other but is more costly to run.
         :param group_by: Key used to group tasks in the response.
         :param master_timeout: Period to wait for a connection to the master node. If
             no response is received before the timeout expires, the request fails and
             returns an error.
-        :param node_id: Comma-separated list of node IDs or names used to limit returned
+        :param nodes: Comma-separated list of node IDs or names used to limit returned
             information.
         :param parent_task_id: Parent task ID used to limit returned information. To
             return all tasks, omit this parameter or use a value of `-1`.
@@ -197,8 +215,8 @@ class TasksClient(NamespacedClient):
             __query["human"] = human
         if master_timeout is not None:
             __query["master_timeout"] = master_timeout
-        if node_id is not None:
-            __query["node_id"] = node_id
+        if nodes is not None:
+            __query["nodes"] = nodes
         if parent_task_id is not None:
             __query["parent_task_id"] = parent_task_id
         if pretty is not None:

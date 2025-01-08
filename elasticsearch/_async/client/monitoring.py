@@ -31,7 +31,7 @@ class MonitoringClient(NamespacedClient):
     async def bulk(
         self,
         *,
-        interval: t.Union["t.Literal[-1]", "t.Literal[0]", str],
+        interval: t.Union[str, t.Literal[-1], t.Literal[0]],
         operations: t.Optional[t.Sequence[t.Mapping[str, t.Any]]] = None,
         body: t.Optional[t.Sequence[t.Mapping[str, t.Any]]] = None,
         system_api_version: str,
@@ -42,7 +42,8 @@ class MonitoringClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Used by the monitoring features to send monitoring data.
+        Send monitoring data. This API is used by the monitoring features to send monitoring
+        data.
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/monitor-elasticsearch-cluster.html>`_
 
