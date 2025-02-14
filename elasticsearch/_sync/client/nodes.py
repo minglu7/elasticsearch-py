@@ -44,15 +44,18 @@ class NodesClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Clear the archived repositories metering. Clear the archived repositories metering
-        information in the cluster.
+        .. raw:: html
+
+          <p>Clear the archived repositories metering.
+          Clear the archived repositories metering information in the cluster.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/clear-repositories-metering-archive-api.html>`_
 
         :param node_id: Comma-separated list of node IDs or names used to limit returned
-            information. All the nodes selective options are explained [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster.html#cluster-nodes).
-        :param max_archive_version: Specifies the maximum [archive_version](https://www.elastic.co/guide/en/elasticsearch/reference/current/get-repositories-metering-api.html#get-repositories-metering-api-response-body)
-            to be cleared from the archive.
+            information.
+        :param max_archive_version: Specifies the maximum `archive_version` to be cleared
+            from the archive.
         """
         if node_id in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'node_id'")
@@ -94,11 +97,13 @@ class NodesClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get cluster repositories metering. Get repositories metering information for
-        a cluster. This API exposes monotonically non-decreasing counters and it is expected
-        that clients would durably store the information needed to compute aggregations
-        over a period of time. Additionally, the information exposed by this API is volatile,
-        meaning that it will not be present after node restarts.
+        .. raw:: html
+
+          <p>Get cluster repositories metering.
+          Get repositories metering information for a cluster.
+          This API exposes monotonically non-decreasing counters and it is expected that clients would durably store the information needed to compute aggregations over a period of time.
+          Additionally, the information exposed by this API is volatile, meaning that it will not be present after node restarts.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-repositories-metering-api.html>`_
 
@@ -138,7 +143,6 @@ class NodesClient(NamespacedClient):
         human: t.Optional[bool] = None,
         ignore_idle_threads: t.Optional[bool] = None,
         interval: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
-        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
         snapshots: t.Optional[int] = None,
         sort: t.Optional[
@@ -151,9 +155,12 @@ class NodesClient(NamespacedClient):
         ] = None,
     ) -> TextApiResponse:
         """
-        Get the hot threads for nodes. Get a breakdown of the hot threads on each selected
-        node in the cluster. The output is plain text with a breakdown of the top hot
-        threads for each node.
+        .. raw:: html
+
+          <p>Get the hot threads for nodes.
+          Get a breakdown of the hot threads on each selected node in the cluster.
+          The output is plain text with a breakdown of the top hot threads for each node.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-hot-threads.html>`_
 
@@ -161,9 +168,6 @@ class NodesClient(NamespacedClient):
         :param ignore_idle_threads: If true, known idle threads (e.g. waiting in a socket
             select, or to get a task from an empty queue) are filtered out.
         :param interval: The interval to do the second sampling of threads.
-        :param master_timeout: Period to wait for a connection to the master node. If
-            no response is received before the timeout expires, the request fails and
-            returns an error.
         :param snapshots: Number of samples of thread stacktrace.
         :param sort: The sort order for 'cpu' type (default: total)
         :param threads: Specifies the number of hot threads to provide information for.
@@ -189,8 +193,6 @@ class NodesClient(NamespacedClient):
             __query["ignore_idle_threads"] = ignore_idle_threads
         if interval is not None:
             __query["interval"] = interval
-        if master_timeout is not None:
-            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         if snapshots is not None:
@@ -223,13 +225,15 @@ class NodesClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         flat_settings: t.Optional[bool] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
         timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get node information. By default, the API returns all attributes and core settings
-        for cluster nodes.
+        .. raw:: html
+
+          <p>Get node information.
+          By default, the API returns all attributes and core settings for cluster nodes.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-info.html>`_
 
@@ -238,9 +242,6 @@ class NodesClient(NamespacedClient):
         :param metric: Limits the information returned to the specific metrics. Supports
             a comma-separated list, such as http,ingest.
         :param flat_settings: If true, returns settings in flat format.
-        :param master_timeout: Period to wait for a connection to the master node. If
-            no response is received before the timeout expires, the request fails and
-            returns an error.
         :param timeout: Period to wait for a response. If no response is received before
             the timeout expires, the request fails and returns an error.
         """
@@ -266,8 +267,6 @@ class NodesClient(NamespacedClient):
             __query["flat_settings"] = flat_settings
         if human is not None:
             __query["human"] = human
-        if master_timeout is not None:
-            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         if timeout is not None:
@@ -298,18 +297,16 @@ class NodesClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Reload the keystore on nodes in the cluster. Secure settings are stored in an
-        on-disk keystore. Certain of these settings are reloadable. That is, you can
-        change them on disk and reload them without restarting any nodes in the cluster.
-        When you have updated reloadable secure settings in your keystore, you can use
-        this API to reload those settings on each node. When the Elasticsearch keystore
-        is password protected and not simply obfuscated, you must provide the password
-        for the keystore when you reload the secure settings. Reloading the settings
-        for the whole cluster assumes that the keystores for all nodes are protected
-        with the same password; this method is allowed only when inter-node communications
-        are encrypted. Alternatively, you can reload the secure settings on each node
-        by locally accessing the API and passing the node-specific Elasticsearch keystore
-        password.
+        .. raw:: html
+
+          <p>Reload the keystore on nodes in the cluster.</p>
+          <p>Secure settings are stored in an on-disk keystore. Certain of these settings are reloadable.
+          That is, you can change them on disk and reload them without restarting any nodes in the cluster.
+          When you have updated reloadable secure settings in your keystore, you can use this API to reload those settings on each node.</p>
+          <p>When the Elasticsearch keystore is password protected and not simply obfuscated, you must provide the password for the keystore when you reload the secure settings.
+          Reloading the settings for the whole cluster assumes that the keystores for all nodes are protected with the same password; this method is allowed only when inter-node communications are encrypted.
+          Alternatively, you can reload the secure settings on each node by locally accessing the API and passing the node-specific Elasticsearch keystore password.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/secure-settings.html#reloadable-secure-settings>`_
 
@@ -374,14 +371,17 @@ class NodesClient(NamespacedClient):
         level: t.Optional[
             t.Union[str, t.Literal["cluster", "indices", "shards"]]
         ] = None,
-        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
         timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         types: t.Optional[t.Sequence[str]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get node statistics. Get statistics for nodes in a cluster. By default, all stats
-        are returned. You can limit the returned information by using metrics.
+        .. raw:: html
+
+          <p>Get node statistics.
+          Get statistics for nodes in a cluster.
+          By default, all stats are returned. You can limit the returned information by using metrics.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-stats.html>`_
 
@@ -406,9 +406,6 @@ class NodesClient(NamespacedClient):
             from segments that are not loaded into memory.
         :param level: Indicates whether statistics are aggregated at the cluster, index,
             or shard level.
-        :param master_timeout: Period to wait for a connection to the master node. If
-            no response is received before the timeout expires, the request fails and
-            returns an error.
         :param timeout: Period to wait for a response. If no response is received before
             the timeout expires, the request fails and returns an error.
         :param types: A comma-separated list of document types for the indexing index
@@ -467,8 +464,6 @@ class NodesClient(NamespacedClient):
             __query["include_unloaded_segments"] = include_unloaded_segments
         if level is not None:
             __query["level"] = level
-        if master_timeout is not None:
-            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         if timeout is not None:
@@ -498,7 +493,10 @@ class NodesClient(NamespacedClient):
         timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get feature usage information.
+        .. raw:: html
+
+          <p>Get feature usage information.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-usage.html>`_
 

@@ -37,16 +37,22 @@ class WatcherClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Acknowledge a watch. Acknowledging a watch enables you to manually throttle the
-        execution of the watch's actions. The acknowledgement state of an action is stored
-        in the `status.actions.<id>.ack.state` structure. IMPORTANT: If the specified
-        watch is currently being executed, this API will return an error The reason for
-        this behavior is to prevent overwriting the watch status from a watch execution.
+        .. raw:: html
+
+          <p>Acknowledge a watch.
+          Acknowledging a watch enables you to manually throttle the execution of the watch's actions.</p>
+          <p>The acknowledgement state of an action is stored in the <code>status.actions.&lt;id&gt;.ack.state</code> structure.</p>
+          <p>IMPORTANT: If the specified watch is currently being executed, this API will return an error
+          The reason for this behavior is to prevent overwriting the watch status from a watch execution.</p>
+          <p>Acknowledging an action throttles further executions of that action until its <code>ack.state</code> is reset to <code>awaits_successful_execution</code>.
+          This happens when the condition of the watch is not met (the condition evaluates to false).</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-ack-watch.html>`_
 
-        :param watch_id: Watch ID
-        :param action_id: A comma-separated list of the action ids to be acked
+        :param watch_id: The watch identifier.
+        :param action_id: A comma-separated list of the action identifiers to acknowledge.
+            If you omit this parameter, all of the actions of the watch are acknowledged.
         """
         if watch_id in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'watch_id'")
@@ -92,11 +98,15 @@ class WatcherClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Activate a watch. A watch can be either active or inactive.
+        .. raw:: html
+
+          <p>Activate a watch.
+          A watch can be either active or inactive.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-activate-watch.html>`_
 
-        :param watch_id: Watch ID
+        :param watch_id: The watch identifier.
         """
         if watch_id in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'watch_id'")
@@ -132,11 +142,15 @@ class WatcherClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Deactivate a watch. A watch can be either active or inactive.
+        .. raw:: html
+
+          <p>Deactivate a watch.
+          A watch can be either active or inactive.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-deactivate-watch.html>`_
 
-        :param watch_id: Watch ID
+        :param watch_id: The watch identifier.
         """
         if watch_id in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'watch_id'")
@@ -172,17 +186,19 @@ class WatcherClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Delete a watch. When the watch is removed, the document representing the watch
-        in the `.watches` index is gone and it will never be run again. Deleting a watch
-        does not delete any watch execution records related to this watch from the watch
-        history. IMPORTANT: Deleting a watch must be done by using only this API. Do
-        not delete the watch directly from the `.watches` index using the Elasticsearch
-        delete document API When Elasticsearch security features are enabled, make sure
-        no write privileges are granted to anyone for the `.watches` index.
+        .. raw:: html
+
+          <p>Delete a watch.
+          When the watch is removed, the document representing the watch in the <code>.watches</code> index is gone and it will never be run again.</p>
+          <p>Deleting a watch does not delete any watch execution records related to this watch from the watch history.</p>
+          <p>IMPORTANT: Deleting a watch must be done by using only this API.
+          Do not delete the watch directly from the <code>.watches</code> index using the Elasticsearch delete document API
+          When Elasticsearch security features are enabled, make sure no write privileges are granted to anyone for the <code>.watches</code> index.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-delete-watch.html>`_
 
-        :param id: Watch ID
+        :param id: The watch identifier.
         """
         if id in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'id'")
@@ -247,19 +263,23 @@ class WatcherClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Run a watch. This API can be used to force execution of the watch outside of
-        its triggering logic or to simulate the watch execution for debugging purposes.
-        For testing and debugging purposes, you also have fine-grained control on how
-        the watch runs. You can run the watch without running all of its actions or alternatively
-        by simulating them. You can also force execution by ignoring the watch condition
-        and control whether a watch record would be written to the watch history after
-        it runs. You can use the run watch API to run watches that are not yet registered
-        by specifying the watch definition inline. This serves as great tool for testing
-        and debugging your watches prior to adding them to Watcher.
+        .. raw:: html
+
+          <p>Run a watch.
+          This API can be used to force execution of the watch outside of its triggering logic or to simulate the watch execution for debugging purposes.</p>
+          <p>For testing and debugging purposes, you also have fine-grained control on how the watch runs.
+          You can run the watch without running all of its actions or alternatively by simulating them.
+          You can also force execution by ignoring the watch condition and control whether a watch record would be written to the watch history after it runs.</p>
+          <p>You can use the run watch API to run watches that are not yet registered by specifying the watch definition inline.
+          This serves as great tool for testing and debugging your watches prior to adding them to Watcher.</p>
+          <p>When Elasticsearch security features are enabled on your cluster, watches are run with the privileges of the user that stored the watches.
+          If your user is allowed to read index <code>a</code>, but not index <code>b</code>, then the exact same set of rules will apply during execution of a watch.</p>
+          <p>When using the run watch API, the authorization data of the user that called the API will be used as a base, instead of the information who stored the watch.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-execute-watch.html>`_
 
-        :param id: Identifier for the watch.
+        :param id: The watch identifier.
         :param action_modes: Determines how to handle the watch actions as part of the
             watch execution.
         :param alternative_input: When present, the watch uses this object as a payload
@@ -270,12 +290,12 @@ class WatcherClient(NamespacedClient):
         :param record_execution: When set to `true`, the watch record representing the
             watch execution result is persisted to the `.watcher-history` index for the
             current time. In addition, the status of the watch is updated, possibly throttling
-            subsequent executions. This can also be specified as an HTTP parameter.
+            subsequent runs. This can also be specified as an HTTP parameter.
         :param simulated_actions:
         :param trigger_data: This structure is parsed as the data of the trigger event
-            that will be used during the watch execution
+            that will be used during the watch execution.
         :param watch: When present, this watch is used instead of the one specified in
-            the request. This watch is not persisted to the index and record_execution
+            the request. This watch is not persisted to the index and `record_execution`
             cannot be set.
         """
         __path_parts: t.Dict[str, str]
@@ -328,6 +348,53 @@ class WatcherClient(NamespacedClient):
         )
 
     @_rewrite_parameters()
+    def get_settings(
+        self,
+        *,
+        error_trace: t.Optional[bool] = None,
+        filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
+        human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
+        pretty: t.Optional[bool] = None,
+    ) -> ObjectApiResponse[t.Any]:
+        """
+        .. raw:: html
+
+          <p>Get Watcher index settings.
+          Get settings for the Watcher internal index (<code>.watches</code>).
+          Only a subset of settings are shown, for example <code>index.auto_expand_replicas</code> and <code>index.number_of_replicas</code>.</p>
+
+
+        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-get-settings.html>`_
+
+        :param master_timeout: The period to wait for a connection to the master node.
+            If no response is received before the timeout expires, the request fails
+            and returns an error.
+        """
+        __path_parts: t.Dict[str, str] = {}
+        __path = "/_watcher/settings"
+        __query: t.Dict[str, t.Any] = {}
+        if error_trace is not None:
+            __query["error_trace"] = error_trace
+        if filter_path is not None:
+            __query["filter_path"] = filter_path
+        if human is not None:
+            __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
+        if pretty is not None:
+            __query["pretty"] = pretty
+        __headers = {"accept": "application/json"}
+        return self.perform_request(  # type: ignore[return-value]
+            "GET",
+            __path,
+            params=__query,
+            headers=__headers,
+            endpoint_id="watcher.get_settings",
+            path_parts=__path_parts,
+        )
+
+    @_rewrite_parameters()
     def get_watch(
         self,
         *,
@@ -338,11 +405,14 @@ class WatcherClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get a watch.
+        .. raw:: html
+
+          <p>Get a watch.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-get-watch.html>`_
 
-        :param id: Watch ID
+        :param id: The watch identifier.
         """
         if id in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'id'")
@@ -374,6 +444,7 @@ class WatcherClient(NamespacedClient):
             "input",
             "metadata",
             "throttle_period",
+            "throttle_period_in_millis",
             "transform",
             "trigger",
         ),
@@ -393,40 +464,51 @@ class WatcherClient(NamespacedClient):
         input: t.Optional[t.Mapping[str, t.Any]] = None,
         metadata: t.Optional[t.Mapping[str, t.Any]] = None,
         pretty: t.Optional[bool] = None,
-        throttle_period: t.Optional[str] = None,
+        throttle_period: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
+        throttle_period_in_millis: t.Optional[t.Any] = None,
         transform: t.Optional[t.Mapping[str, t.Any]] = None,
         trigger: t.Optional[t.Mapping[str, t.Any]] = None,
         version: t.Optional[int] = None,
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Create or update a watch. When a watch is registered, a new document that represents
-        the watch is added to the `.watches` index and its trigger is immediately registered
-        with the relevant trigger engine. Typically for the `schedule` trigger, the scheduler
-        is the trigger engine. IMPORTANT: You must use Kibana or this API to create a
-        watch. Do not add a watch directly to the `.watches` index by using the Elasticsearch
-        index API. If Elasticsearch security features are enabled, do not give users
-        write privileges on the `.watches` index. When you add a watch you can also define
-        its initial active state by setting the *active* parameter. When Elasticsearch
-        security features are enabled, your watch can index or search only on indices
-        for which the user that stored the watch has privileges. If the user is able
-        to read index `a`, but not index `b`, the same will apply when the watch runs.
+        .. raw:: html
+
+          <p>Create or update a watch.
+          When a watch is registered, a new document that represents the watch is added to the <code>.watches</code> index and its trigger is immediately registered with the relevant trigger engine.
+          Typically for the <code>schedule</code> trigger, the scheduler is the trigger engine.</p>
+          <p>IMPORTANT: You must use Kibana or this API to create a watch.
+          Do not add a watch directly to the <code>.watches</code> index by using the Elasticsearch index API.
+          If Elasticsearch security features are enabled, do not give users write privileges on the <code>.watches</code> index.</p>
+          <p>When you add a watch you can also define its initial active state by setting the <em>active</em> parameter.</p>
+          <p>When Elasticsearch security features are enabled, your watch can index or search only on indices for which the user that stored the watch has privileges.
+          If the user is able to read index <code>a</code>, but not index <code>b</code>, the same will apply when the watch runs.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-put-watch.html>`_
 
-        :param id: Watch ID
-        :param actions:
-        :param active: Specify whether the watch is in/active by default
-        :param condition:
+        :param id: The identifier for the watch.
+        :param actions: The list of actions that will be run if the condition matches.
+        :param active: The initial state of the watch. The default value is `true`, which
+            means the watch is active by default.
+        :param condition: The condition that defines if the actions should be run.
         :param if_primary_term: only update the watch if the last operation that has
             changed the watch has the specified primary term
         :param if_seq_no: only update the watch if the last operation that has changed
             the watch has the specified sequence number
-        :param input:
-        :param metadata:
-        :param throttle_period:
-        :param transform:
-        :param trigger:
+        :param input: The input that defines the input that loads the data for the watch.
+        :param metadata: Metadata JSON that will be copied into the history entries.
+        :param throttle_period: The minimum time between actions being run. The default
+            is 5 seconds. This default can be changed in the config file with the setting
+            `xpack.watcher.throttle.period.default_period`. If both this value and the
+            `throttle_period_in_millis` parameter are specified, Watcher uses the last
+            parameter included in the request.
+        :param throttle_period_in_millis: Minimum time in milliseconds between actions
+            being run. Defaults to 5000. If both this value and the throttle_period parameter
+            are specified, Watcher uses the last parameter included in the request.
+        :param transform: The transform that processes the watch payload to prepare it
+            for the watch actions.
+        :param trigger: The trigger that defines when the watch should run.
         :param version: Explicit version number for concurrency control
         """
         if id in SKIP_IN_PATH:
@@ -462,6 +544,8 @@ class WatcherClient(NamespacedClient):
                 __body["metadata"] = metadata
             if throttle_period is not None:
                 __body["throttle_period"] = throttle_period
+            if throttle_period_in_millis is not None:
+                __body["throttle_period_in_millis"] = throttle_period_in_millis
             if transform is not None:
                 __body["transform"] = transform
             if trigger is not None:
@@ -507,17 +591,21 @@ class WatcherClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Query watches. Get all registered watches in a paginated manner and optionally
-        filter watches by a query.
+        .. raw:: html
+
+          <p>Query watches.
+          Get all registered watches in a paginated manner and optionally filter watches by a query.</p>
+          <p>Note that only the <code>_id</code> and <code>metadata.*</code> fields are queryable or sortable.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-query-watches.html>`_
 
-        :param from_: The offset from the first result to fetch. Needs to be non-negative.
-        :param query: Optional, query filter watches to be returned.
-        :param search_after: Optional search After to do pagination using last hit’s
-            sort values.
-        :param size: The number of hits to return. Needs to be non-negative.
-        :param sort: Optional sort definition.
+        :param from_: The offset from the first result to fetch. It must be non-negative.
+        :param query: A query that filters the watches to be returned.
+        :param search_after: Retrieve the next page of hits using a set of sort values
+            from the previous page.
+        :param size: The number of hits to return. It must be non-negative.
+        :param sort: One or more fields used to sort the search results.
         """
         __path_parts: t.Dict[str, str] = {}
         __path = "/_watcher/_query/watches"
@@ -575,12 +663,19 @@ class WatcherClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Start the watch service. Start the Watcher service if it is not already running.
+        .. raw:: html
+
+          <p>Start the watch service.
+          Start the Watcher service if it is not already running.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-start.html>`_
+
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         __path_parts: t.Dict[str, str] = {}
         __path = "/_watcher/_start"
@@ -591,6 +686,8 @@ class WatcherClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -635,7 +732,12 @@ class WatcherClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get Watcher statistics.
+        .. raw:: html
+
+          <p>Get Watcher statistics.
+          This API always returns basic metrics.
+          You retrieve more metrics by using the metric parameter.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-stats.html>`_
 
@@ -678,12 +780,21 @@ class WatcherClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Stop the watch service. Stop the Watcher service if it is running.
+        .. raw:: html
+
+          <p>Stop the watch service.
+          Stop the Watcher service if it is running.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-stop.html>`_
+
+        :param master_timeout: The period to wait for the master node. If the master
+            node is not available before the timeout expires, the request fails and returns
+            an error. To indicate that the request should never timeout, set it to `-1`.
         """
         __path_parts: t.Dict[str, str] = {}
         __path = "/_watcher/_stop"
@@ -694,6 +805,8 @@ class WatcherClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -703,5 +816,76 @@ class WatcherClient(NamespacedClient):
             params=__query,
             headers=__headers,
             endpoint_id="watcher.stop",
+            path_parts=__path_parts,
+        )
+
+    @_rewrite_parameters(
+        body_fields=("index_auto_expand_replicas", "index_number_of_replicas"),
+        parameter_aliases={
+            "index.auto_expand_replicas": "index_auto_expand_replicas",
+            "index.number_of_replicas": "index_number_of_replicas",
+        },
+    )
+    def update_settings(
+        self,
+        *,
+        error_trace: t.Optional[bool] = None,
+        filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
+        human: t.Optional[bool] = None,
+        index_auto_expand_replicas: t.Optional[str] = None,
+        index_number_of_replicas: t.Optional[int] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
+        pretty: t.Optional[bool] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
+        body: t.Optional[t.Dict[str, t.Any]] = None,
+    ) -> ObjectApiResponse[t.Any]:
+        """
+        .. raw:: html
+
+          <p>Update Watcher index settings.
+          Update settings for the Watcher internal index (<code>.watches</code>).
+          Only a subset of settings can be modified.
+          This includes <code>index.auto_expand_replicas</code> and <code>index.number_of_replicas</code>.</p>
+
+
+        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/watcher-api-update-settings.html>`_
+
+        :param index_auto_expand_replicas:
+        :param index_number_of_replicas:
+        :param master_timeout: The period to wait for a connection to the master node.
+            If no response is received before the timeout expires, the request fails
+            and returns an error.
+        :param timeout: The period to wait for a response. If no response is received
+            before the timeout expires, the request fails and returns an error.
+        """
+        __path_parts: t.Dict[str, str] = {}
+        __path = "/_watcher/settings"
+        __query: t.Dict[str, t.Any] = {}
+        __body: t.Dict[str, t.Any] = body if body is not None else {}
+        if error_trace is not None:
+            __query["error_trace"] = error_trace
+        if filter_path is not None:
+            __query["filter_path"] = filter_path
+        if human is not None:
+            __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
+        if pretty is not None:
+            __query["pretty"] = pretty
+        if timeout is not None:
+            __query["timeout"] = timeout
+        if not __body:
+            if index_auto_expand_replicas is not None:
+                __body["index.auto_expand_replicas"] = index_auto_expand_replicas
+            if index_number_of_replicas is not None:
+                __body["index.number_of_replicas"] = index_number_of_replicas
+        __headers = {"accept": "application/json", "content-type": "application/json"}
+        return self.perform_request(  # type: ignore[return-value]
+            "PUT",
+            __path,
+            params=__query,
+            headers=__headers,
+            body=__body,
+            endpoint_id="watcher.update_settings",
             path_parts=__path_parts,
         )

@@ -33,15 +33,20 @@ class CcrClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Delete auto-follow patterns. Delete a collection of cross-cluster replication
-        auto-follow patterns.
+        .. raw:: html
+
+          <p>Delete auto-follow patterns.
+          Delete a collection of cross-cluster replication auto-follow patterns.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-delete-auto-follow-pattern.html>`_
 
         :param name: The name of the auto follow pattern.
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         if name in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'name'")
@@ -54,6 +59,8 @@ class CcrClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -94,6 +101,7 @@ class CcrClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         max_outstanding_read_requests: t.Optional[int] = None,
         max_outstanding_write_requests: t.Optional[int] = None,
         max_read_request_operation_count: t.Optional[int] = None,
@@ -112,10 +120,12 @@ class CcrClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Create a follower. Create a cross-cluster replication follower index that follows
-        a specific leader index. When the API returns, the follower index exists and
-        cross-cluster replication starts replicating operations from the leader index
-        to the follower index.
+        .. raw:: html
+
+          <p>Create a follower.
+          Create a cross-cluster replication follower index that follows a specific leader index.
+          When the API returns, the follower index exists and cross-cluster replication starts replicating operations from the leader index to the follower index.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-put-follow.html>`_
 
@@ -124,6 +134,7 @@ class CcrClient(NamespacedClient):
         :param remote_cluster: The remote cluster containing the leader index.
         :param data_stream_name: If the leader index is part of a data stream, the name
             to which the local data stream for the followed index should be renamed.
+        :param master_timeout: Period to wait for a connection to the master node.
         :param max_outstanding_read_requests: The maximum number of outstanding reads
             requests from the remote cluster.
         :param max_outstanding_write_requests: The maximum number of outstanding write
@@ -174,6 +185,8 @@ class CcrClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         if wait_for_active_shards is not None:
@@ -232,18 +245,22 @@ class CcrClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get follower information. Get information about all cross-cluster replication
-        follower indices. For example, the results include follower index names, leader
-        index names, replication options, and whether the follower indices are active
-        or paused.
+        .. raw:: html
+
+          <p>Get follower information.
+          Get information about all cross-cluster replication follower indices.
+          For example, the results include follower index names, leader index names, replication options, and whether the follower indices are active or paused.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-get-follow-info.html>`_
 
         :param index: A comma-separated list of index patterns; use `_all` to perform
             the operation on all indices
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         if index in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'index'")
@@ -256,6 +273,8 @@ class CcrClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -277,16 +296,22 @@ class CcrClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
         pretty: t.Optional[bool] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get follower stats. Get cross-cluster replication follower stats. The API returns
-        shard-level stats about the "following tasks" associated with each shard for
-        the specified indices.
+        .. raw:: html
+
+          <p>Get follower stats.
+          Get cross-cluster replication follower stats.
+          The API returns shard-level stats about the &quot;following tasks&quot; associated with each shard for the specified indices.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-get-follow-stats.html>`_
 
         :param index: A comma-separated list of index patterns; use `_all` to perform
             the operation on all indices
+        :param timeout: Period to wait for a response. If no response is received before
+            the timeout expires, the request fails and returns an error.
         """
         if index in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'index'")
@@ -301,6 +326,8 @@ class CcrClient(NamespacedClient):
             __query["human"] = human
         if pretty is not None:
             __query["pretty"] = pretty
+        if timeout is not None:
+            __query["timeout"] = timeout
         __headers = {"accept": "application/json"}
         return self.perform_request(  # type: ignore[return-value]
             "GET",
@@ -331,26 +358,23 @@ class CcrClient(NamespacedClient):
         human: t.Optional[bool] = None,
         leader_remote_cluster: t.Optional[str] = None,
         pretty: t.Optional[bool] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Forget a follower. Remove the cross-cluster replication follower retention leases
-        from the leader. A following index takes out retention leases on its leader index.
-        These leases are used to increase the likelihood that the shards of the leader
-        index retain the history of operations that the shards of the following index
-        need to run replication. When a follower index is converted to a regular index
-        by the unfollow API (either by directly calling the API or by index lifecycle
-        management tasks), these leases are removed. However, removal of the leases can
-        fail, for example when the remote cluster containing the leader index is unavailable.
-        While the leases will eventually expire on their own, their extended existence
-        can cause the leader index to hold more history than necessary and prevent index
-        lifecycle management from performing some operations on the leader index. This
-        API exists to enable manually removing the leases when the unfollow API is unable
-        to do so. NOTE: This API does not stop replication by a following index. If you
-        use this API with a follower index that is still actively following, the following
-        index will add back retention leases on the leader. The only purpose of this
-        API is to handle the case of failure to remove the following retention leases
-        after the unfollow API is invoked.
+        .. raw:: html
+
+          <p>Forget a follower.
+          Remove the cross-cluster replication follower retention leases from the leader.</p>
+          <p>A following index takes out retention leases on its leader index.
+          These leases are used to increase the likelihood that the shards of the leader index retain the history of operations that the shards of the following index need to run replication.
+          When a follower index is converted to a regular index by the unfollow API (either by directly calling the API or by index lifecycle management tasks), these leases are removed.
+          However, removal of the leases can fail, for example when the remote cluster containing the leader index is unavailable.
+          While the leases will eventually expire on their own, their extended existence can cause the leader index to hold more history than necessary and prevent index lifecycle management from performing some operations on the leader index.
+          This API exists to enable manually removing the leases when the unfollow API is unable to do so.</p>
+          <p>NOTE: This API does not stop replication by a following index. If you use this API with a follower index that is still actively following, the following index will add back retention leases on the leader.
+          The only purpose of this API is to handle the case of failure to remove the following retention leases after the unfollow API is invoked.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-post-forget-follower.html>`_
 
@@ -360,6 +384,8 @@ class CcrClient(NamespacedClient):
         :param follower_index:
         :param follower_index_uuid:
         :param leader_remote_cluster:
+        :param timeout: Period to wait for a response. If no response is received before
+            the timeout expires, the request fails and returns an error.
         """
         if index in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'index'")
@@ -375,6 +401,8 @@ class CcrClient(NamespacedClient):
             __query["human"] = human
         if pretty is not None:
             __query["pretty"] = pretty
+        if timeout is not None:
+            __query["timeout"] = timeout
         if not __body:
             if follower_cluster is not None:
                 __body["follower_cluster"] = follower_cluster
@@ -403,15 +431,21 @@ class CcrClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get auto-follow patterns. Get cross-cluster replication auto-follow patterns.
+        .. raw:: html
+
+          <p>Get auto-follow patterns.
+          Get cross-cluster replication auto-follow patterns.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-get-auto-follow-pattern.html>`_
 
         :param name: Specifies the auto-follow pattern collection that you want to retrieve.
             If you do not specify a name, the API returns information for all collections.
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         __path_parts: t.Dict[str, str]
         if name not in SKIP_IN_PATH:
@@ -427,6 +461,8 @@ class CcrClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -447,22 +483,26 @@ class CcrClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Pause an auto-follow pattern. Pause a cross-cluster replication auto-follow pattern.
-        When the API returns, the auto-follow pattern is inactive. New indices that are
-        created on the remote cluster and match the auto-follow patterns are ignored.
-        You can resume auto-following with the resume auto-follow pattern API. When it
-        resumes, the auto-follow pattern is active again and automatically configures
-        follower indices for newly created indices on the remote cluster that match its
-        patterns. Remote indices that were created while the pattern was paused will
-        also be followed, unless they have been deleted or closed in the interim.
+        .. raw:: html
+
+          <p>Pause an auto-follow pattern.
+          Pause a cross-cluster replication auto-follow pattern.
+          When the API returns, the auto-follow pattern is inactive.
+          New indices that are created on the remote cluster and match the auto-follow patterns are ignored.</p>
+          <p>You can resume auto-following with the resume auto-follow pattern API.
+          When it resumes, the auto-follow pattern is active again and automatically configures follower indices for newly created indices on the remote cluster that match its patterns.
+          Remote indices that were created while the pattern was paused will also be followed, unless they have been deleted or closed in the interim.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-pause-auto-follow-pattern.html>`_
 
         :param name: The name of the auto follow pattern that should pause discovering
             new indices to follow.
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         if name in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'name'")
@@ -475,6 +515,8 @@ class CcrClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -495,18 +537,24 @@ class CcrClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Pause a follower. Pause a cross-cluster replication follower index. The follower
-        index will not fetch any additional operations from the leader index. You can
-        resume following with the resume follower API. You can pause and resume a follower
-        index to change the configuration of the following task.
+        .. raw:: html
+
+          <p>Pause a follower.
+          Pause a cross-cluster replication follower index.
+          The follower index will not fetch any additional operations from the leader index.
+          You can resume following with the resume follower API.
+          You can pause and resume a follower index to change the configuration of the following task.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-post-pause-follow.html>`_
 
         :param index: The name of the follower index that should pause following its
             leader index.
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         if index in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'index'")
@@ -519,6 +567,8 @@ class CcrClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -561,6 +611,7 @@ class CcrClient(NamespacedClient):
         human: t.Optional[bool] = None,
         leader_index_exclusion_patterns: t.Optional[t.Sequence[str]] = None,
         leader_index_patterns: t.Optional[t.Sequence[str]] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         max_outstanding_read_requests: t.Optional[int] = None,
         max_outstanding_write_requests: t.Optional[int] = None,
         max_read_request_operation_count: t.Optional[int] = None,
@@ -576,14 +627,15 @@ class CcrClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Create or update auto-follow patterns. Create a collection of cross-cluster replication
-        auto-follow patterns for a remote cluster. Newly created indices on the remote
-        cluster that match any of the patterns are automatically configured as follower
-        indices. Indices on the remote cluster that were created before the auto-follow
-        pattern was created will not be auto-followed even if they match the pattern.
-        This API can also be used to update auto-follow patterns. NOTE: Follower indices
-        that were configured automatically before updating an auto-follow pattern will
-        remain unchanged even if they do not match against the new patterns.
+        .. raw:: html
+
+          <p>Create or update auto-follow patterns.
+          Create a collection of cross-cluster replication auto-follow patterns for a remote cluster.
+          Newly created indices on the remote cluster that match any of the patterns are automatically configured as follower indices.
+          Indices on the remote cluster that were created before the auto-follow pattern was created will not be auto-followed even if they match the pattern.</p>
+          <p>This API can also be used to update auto-follow patterns.
+          NOTE: Follower indices that were configured automatically before updating an auto-follow pattern will remain unchanged even if they do not match against the new patterns.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-put-auto-follow-pattern.html>`_
 
@@ -600,6 +652,7 @@ class CcrClient(NamespacedClient):
             or more leader_index_exclusion_patterns won’t be followed.
         :param leader_index_patterns: An array of simple index patterns to match against
             indices in the remote cluster specified by the remote_cluster field.
+        :param master_timeout: Period to wait for a connection to the master node.
         :param max_outstanding_read_requests: The maximum number of outstanding reads
             requests from the remote cluster.
         :param max_outstanding_write_requests: The maximum number of outstanding reads
@@ -644,6 +697,8 @@ class CcrClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         if not __body:
@@ -704,19 +759,23 @@ class CcrClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Resume an auto-follow pattern. Resume a cross-cluster replication auto-follow
-        pattern that was paused. The auto-follow pattern will resume configuring following
-        indices for newly created indices that match its patterns on the remote cluster.
-        Remote indices created while the pattern was paused will also be followed unless
-        they have been deleted or closed in the interim.
+        .. raw:: html
+
+          <p>Resume an auto-follow pattern.
+          Resume a cross-cluster replication auto-follow pattern that was paused.
+          The auto-follow pattern will resume configuring following indices for newly created indices that match its patterns on the remote cluster.
+          Remote indices created while the pattern was paused will also be followed unless they have been deleted or closed in the interim.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-resume-auto-follow-pattern.html>`_
 
         :param name: The name of the auto follow pattern to resume discovering new indices
             to follow.
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         if name in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'name'")
@@ -729,6 +788,8 @@ class CcrClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -762,6 +823,7 @@ class CcrClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         max_outstanding_read_requests: t.Optional[int] = None,
         max_outstanding_write_requests: t.Optional[int] = None,
         max_read_request_operation_count: t.Optional[int] = None,
@@ -776,15 +838,19 @@ class CcrClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Resume a follower. Resume a cross-cluster replication follower index that was
-        paused. The follower index could have been paused with the pause follower API.
-        Alternatively it could be paused due to replication that cannot be retried due
-        to failures during following tasks. When this API returns, the follower index
-        will resume fetching operations from the leader index.
+        .. raw:: html
+
+          <p>Resume a follower.
+          Resume a cross-cluster replication follower index that was paused.
+          The follower index could have been paused with the pause follower API.
+          Alternatively it could be paused due to replication that cannot be retried due to failures during following tasks.
+          When this API returns, the follower index will resume fetching operations from the leader index.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-post-resume-follow.html>`_
 
         :param index: The name of the follow index to resume following.
+        :param master_timeout: Period to wait for a connection to the master node.
         :param max_outstanding_read_requests:
         :param max_outstanding_write_requests:
         :param max_read_request_operation_count:
@@ -808,6 +874,8 @@ class CcrClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         if not __body:
@@ -859,13 +927,22 @@ class CcrClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
+        timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get cross-cluster replication stats. This API returns stats about auto-following
-        and the same shard-level stats as the get follower stats API.
+        .. raw:: html
+
+          <p>Get cross-cluster replication stats.
+          This API returns stats about auto-following and the same shard-level stats as the get follower stats API.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-get-stats.html>`_
+
+        :param master_timeout: Period to wait for a connection to the master node.
+        :param timeout: Period to wait for a response. If no response is received before
+            the timeout expires, the request fails and returns an error.
         """
         __path_parts: t.Dict[str, str] = {}
         __path = "/_ccr/stats"
@@ -876,8 +953,12 @@ class CcrClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
+        if timeout is not None:
+            __query["timeout"] = timeout
         __headers = {"accept": "application/json"}
         return self.perform_request(  # type: ignore[return-value]
             "GET",
@@ -896,21 +977,24 @@ class CcrClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Unfollow an index. Convert a cross-cluster replication follower index to a regular
-        index. The API stops the following task associated with a follower index and
-        removes index metadata and settings associated with cross-cluster replication.
-        The follower index must be paused and closed before you call the unfollow API.
-        NOTE: Currently cross-cluster replication does not support converting an existing
-        regular index to a follower index. Converting a follower index to a regular index
-        is an irreversible operation.
+        .. raw:: html
+
+          <p>Unfollow an index.
+          Convert a cross-cluster replication follower index to a regular index.
+          The API stops the following task associated with a follower index and removes index metadata and settings associated with cross-cluster replication.
+          The follower index must be paused and closed before you call the unfollow API.</p>
+          <p>NOTE: Currently cross-cluster replication does not support converting an existing regular index to a follower index. Converting a follower index to a regular index is an irreversible operation.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ccr-post-unfollow.html>`_
 
         :param index: The name of the follower index that should be turned into a regular
             index.
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         if index in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'index'")
@@ -923,6 +1007,8 @@ class CcrClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}

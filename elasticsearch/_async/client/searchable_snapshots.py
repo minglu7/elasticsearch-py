@@ -44,14 +44,15 @@ class SearchableSnapshotsClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get cache statistics. Get statistics about the shared cache for partially mounted
-        indices.
+        .. raw:: html
 
-        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-apis.html>`_
+          <p>Get cache statistics.
+          Get statistics about the shared cache for partially mounted indices.</p>
 
-        :param node_id: A comma-separated list of node IDs or names to limit the returned
-            information; use `_local` to return information from the node you're connecting
-            to, leave empty to get information from all nodes
+
+        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-api-cache-stats.html>`_
+
+        :param node_id: The names of the nodes in the cluster to target.
         :param master_timeout:
         """
         __path_parts: t.Dict[str, str]
@@ -104,12 +105,16 @@ class SearchableSnapshotsClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Clear the cache. Clear indices and data streams from the shared cache for partially
-        mounted indices.
+        .. raw:: html
 
-        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-apis.html>`_
+          <p>Clear the cache.
+          Clear indices and data streams from the shared cache for partially mounted indices.</p>
 
-        :param index: A comma-separated list of index names
+
+        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-api-clear-cache.html>`_
+
+        :param index: A comma-separated list of data streams, indices, and aliases to
+            clear from the cache. It supports wildcards (`*`).
         :param allow_no_indices: Whether to ignore if a wildcard indices expression resolves
             into no concrete indices. (This includes `_all` string or when no indices
             have been specified)
@@ -177,24 +182,33 @@ class SearchableSnapshotsClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Mount a snapshot. Mount a snapshot as a searchable snapshot index. Do not use
-        this API for snapshots managed by index lifecycle management (ILM). Manually
-        mounting ILM-managed snapshots can interfere with ILM processes.
+        .. raw:: html
+
+          <p>Mount a snapshot.
+          Mount a snapshot as a searchable snapshot index.
+          Do not use this API for snapshots managed by index lifecycle management (ILM).
+          Manually mounting ILM-managed snapshots can interfere with ILM processes.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-api-mount-snapshot.html>`_
 
         :param repository: The name of the repository containing the snapshot of the
-            index to mount
-        :param snapshot: The name of the snapshot of the index to mount
-        :param index:
-        :param ignore_index_settings:
-        :param index_settings:
-        :param master_timeout: Explicit operation timeout for connection to master node
-        :param renamed_index:
-        :param storage: Selects the kind of local storage used to accelerate searches.
-            Experimental, and defaults to `full_copy`
-        :param wait_for_completion: Should this request wait until the operation has
-            completed before returning
+            index to mount.
+        :param snapshot: The name of the snapshot of the index to mount.
+        :param index: The name of the index contained in the snapshot whose data is to
+            be mounted. If no `renamed_index` is specified, this name will also be used
+            to create the new index.
+        :param ignore_index_settings: The names of settings that should be removed from
+            the index when it is mounted.
+        :param index_settings: The settings that should be added to the index when it
+            is mounted.
+        :param master_timeout: The period to wait for the master node. If the master
+            node is not available before the timeout expires, the request fails and returns
+            an error. To indicate that the request should never timeout, set it to `-1`.
+        :param renamed_index: The name of the index that will be created.
+        :param storage: The mount option for the searchable snapshot index.
+        :param wait_for_completion: If true, the request blocks until the operation is
+            complete.
         """
         if repository in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'repository'")
@@ -259,11 +273,15 @@ class SearchableSnapshotsClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get searchable snapshot statistics.
+        .. raw:: html
 
-        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-apis.html>`_
+          <p>Get searchable snapshot statistics.</p>
 
-        :param index: A comma-separated list of index names
+
+        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-api-stats.html>`_
+
+        :param index: A comma-separated list of data streams and indices to retrieve
+            statistics for.
         :param level: Return stats aggregated at cluster, index or shard level
         """
         __path_parts: t.Dict[str, str]

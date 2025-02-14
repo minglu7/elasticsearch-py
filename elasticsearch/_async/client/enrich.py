@@ -33,14 +33,20 @@ class EnrichClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Delete an enrich policy. Deletes an existing enrich policy and its enrich index.
+        .. raw:: html
+
+          <p>Delete an enrich policy.
+          Deletes an existing enrich policy and its enrich index.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-enrich-policy-api.html>`_
 
         :param name: Enrich policy to delete.
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         if name in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'name'")
@@ -53,6 +59,8 @@ class EnrichClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -73,15 +81,21 @@ class EnrichClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
         wait_for_completion: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Run an enrich policy. Create the enrich index for an existing enrich policy.
+        .. raw:: html
+
+          <p>Run an enrich policy.
+          Create the enrich index for an existing enrich policy.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/execute-enrich-policy-api.html>`_
 
         :param name: Enrich policy to execute.
+        :param master_timeout: Period to wait for a connection to the master node.
         :param wait_for_completion: If `true`, the request blocks other enrich policy
             execution requests until complete.
         """
@@ -96,6 +110,8 @@ class EnrichClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         if wait_for_completion is not None:
@@ -118,15 +134,21 @@ class EnrichClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get an enrich policy. Returns information about an enrich policy.
+        .. raw:: html
+
+          <p>Get an enrich policy.
+          Returns information about an enrich policy.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-enrich-policy-api.html>`_
 
         :param name: Comma-separated list of enrich policy names used to limit the request.
             To return information for all enrich policies, omit this parameter.
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         __path_parts: t.Dict[str, str]
         if name not in SKIP_IN_PATH:
@@ -142,6 +164,8 @@ class EnrichClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -165,19 +189,25 @@ class EnrichClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         geo_match: t.Optional[t.Mapping[str, t.Any]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         match: t.Optional[t.Mapping[str, t.Any]] = None,
         pretty: t.Optional[bool] = None,
         range: t.Optional[t.Mapping[str, t.Any]] = None,
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Create an enrich policy. Creates an enrich policy.
+        .. raw:: html
+
+          <p>Create an enrich policy.
+          Creates an enrich policy.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/put-enrich-policy-api.html>`_
 
         :param name: Name of the enrich policy to create or update.
         :param geo_match: Matches enrich data to incoming documents based on a `geo_shape`
             query.
+        :param master_timeout: Period to wait for a connection to the master node.
         :param match: Matches enrich data to incoming documents based on a `term` query.
         :param range: Matches a number, date, or IP address in incoming documents to
             a range in the enrich index based on a `term` query.
@@ -194,6 +224,8 @@ class EnrichClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         if not __body:
@@ -221,13 +253,19 @@ class EnrichClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get enrich stats. Returns enrich coordinator statistics and information about
-        enrich policies that are currently executing.
+        .. raw:: html
+
+          <p>Get enrich stats.
+          Returns enrich coordinator statistics and information about enrich policies that are currently executing.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/enrich-stats-api.html>`_
+
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         __path_parts: t.Dict[str, str] = {}
         __path = "/_enrich/_stats"
@@ -238,6 +276,8 @@ class EnrichClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}

@@ -39,7 +39,10 @@ class SqlClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Clear an SQL search cursor.
+        .. raw:: html
+
+          <p>Clear an SQL search cursor.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/clear-sql-cursor-api.html>`_
 
@@ -84,12 +87,21 @@ class SqlClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Delete an async SQL search. Delete an async SQL search or a stored synchronous
-        SQL search. If the search is still running, the API cancels it.
+        .. raw:: html
+
+          <p>Delete an async SQL search.
+          Delete an async SQL search or a stored synchronous SQL search.
+          If the search is still running, the API cancels it.</p>
+          <p>If the Elasticsearch security features are enabled, only the following users can use this API to delete a search:</p>
+          <ul>
+          <li>Users with the <code>cancel_task</code> cluster privilege.</li>
+          <li>The user who first submitted the search.</li>
+          </ul>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-async-sql-search-api.html>`_
 
-        :param id: Identifier for the search.
+        :param id: The identifier for the search.
         """
         if id in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'id'")
@@ -131,21 +143,26 @@ class SqlClient(NamespacedClient):
         ] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get async SQL search results. Get the current status and available results for
-        an async SQL search or stored synchronous SQL search.
+        .. raw:: html
+
+          <p>Get async SQL search results.
+          Get the current status and available results for an async SQL search or stored synchronous SQL search.</p>
+          <p>If the Elasticsearch security features are enabled, only the user who first submitted the SQL search can retrieve the search using this API.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-async-sql-search-api.html>`_
 
-        :param id: Identifier for the search.
-        :param delimiter: Separator for CSV results. The API only supports this parameter
-            for CSV responses.
-        :param format: Format for the response. You must specify a format using this
-            parameter or the Accept HTTP header. If you specify both, the API uses this
-            parameter.
-        :param keep_alive: Retention period for the search and its results. Defaults
+        :param id: The identifier for the search.
+        :param delimiter: The separator for CSV results. The API supports this parameter
+            only for CSV responses.
+        :param format: The format for the response. You must specify a format using this
+            parameter or the `Accept` HTTP header. If you specify both, the API uses
+            this parameter.
+        :param keep_alive: The retention period for the search and its results. It defaults
             to the `keep_alive` period for the original SQL search.
-        :param wait_for_completion_timeout: Period to wait for complete results. Defaults
-            to no timeout, meaning the request waits for complete search results.
+        :param wait_for_completion_timeout: The period to wait for complete results.
+            It defaults to no timeout, meaning the request waits for complete search
+            results.
         """
         if id in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'id'")
@@ -189,12 +206,15 @@ class SqlClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get the async SQL search status. Get the current status of an async SQL search
-        or a stored synchronous SQL search.
+        .. raw:: html
+
+          <p>Get the async SQL search status.
+          Get the current status of an async SQL search or a stored synchronous SQL search.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-async-sql-search-status-api.html>`_
 
-        :param id: Identifier for the search.
+        :param id: The identifier for the search.
         """
         if id in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'id'")
@@ -221,6 +241,7 @@ class SqlClient(NamespacedClient):
 
     @_rewrite_parameters(
         body_fields=(
+            "allow_partial_search_results",
             "catalog",
             "columnar",
             "cursor",
@@ -243,6 +264,7 @@ class SqlClient(NamespacedClient):
     def query(
         self,
         *,
+        allow_partial_search_results: t.Optional[bool] = None,
         catalog: t.Optional[str] = None,
         columnar: t.Optional[bool] = None,
         cursor: t.Optional[str] = None,
@@ -273,40 +295,53 @@ class SqlClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get SQL search results. Run an SQL request.
+        .. raw:: html
+
+          <p>Get SQL search results.
+          Run an SQL request.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/sql-search-api.html>`_
 
-        :param catalog: Default catalog (cluster) for queries. If unspecified, the queries
-            execute on the data in the local cluster only.
-        :param columnar: If true, the results in a columnar fashion: one row represents
-            all the values of a certain column from the current page of results.
-        :param cursor: Cursor used to retrieve a set of paginated results. If you specify
-            a cursor, the API only uses the `columnar` and `time_zone` request body parameters.
-            It ignores other request body parameters.
-        :param fetch_size: The maximum number of rows (or entries) to return in one response
-        :param field_multi_value_leniency: Throw an exception when encountering multiple
-            values for a field (default) or be lenient and return the first value from
-            the list (without any guarantees of what that will be - typically the first
-            in natural ascending order).
-        :param filter: Elasticsearch query DSL for additional filtering.
-        :param format: Format for the response.
-        :param index_using_frozen: If true, the search can run on frozen indices. Defaults
-            to false.
-        :param keep_alive: Retention period for an async or saved synchronous search.
-        :param keep_on_completion: If true, Elasticsearch stores synchronous searches
-            if you also specify the wait_for_completion_timeout parameter. If false,
-            Elasticsearch only stores async searches that don’t finish before the wait_for_completion_timeout.
-        :param page_timeout: The timeout before a pagination request fails.
-        :param params: Values for parameters in the query.
-        :param query: SQL query to run.
+        :param allow_partial_search_results: If `true`, the response has partial results
+            when there are shard request timeouts or shard failures. If `false`, the
+            API returns an error with no partial results.
+        :param catalog: The default catalog (cluster) for queries. If unspecified, the
+            queries execute on the data in the local cluster only.
+        :param columnar: If `true`, the results are in a columnar fashion: one row represents
+            all the values of a certain column from the current page of results. The
+            API supports this parameter only for CBOR, JSON, SMILE, and YAML responses.
+        :param cursor: The cursor used to retrieve a set of paginated results. If you
+            specify a cursor, the API only uses the `columnar` and `time_zone` request
+            body parameters. It ignores other request body parameters.
+        :param fetch_size: The maximum number of rows (or entries) to return in one response.
+        :param field_multi_value_leniency: If `false`, the API returns an exception when
+            encountering multiple values for a field. If `true`, the API is lenient and
+            returns the first value from the array with no guarantee of consistent results.
+        :param filter: The Elasticsearch query DSL for additional filtering.
+        :param format: The format for the response. You can also specify a format using
+            the `Accept` HTTP header. If you specify both this parameter and the `Accept`
+            HTTP header, this parameter takes precedence.
+        :param index_using_frozen: If `true`, the search can run on frozen indices.
+        :param keep_alive: The retention period for an async or saved synchronous search.
+        :param keep_on_completion: If `true`, Elasticsearch stores synchronous searches
+            if you also specify the `wait_for_completion_timeout` parameter. If `false`,
+            Elasticsearch only stores async searches that don't finish before the `wait_for_completion_timeout`.
+        :param page_timeout: The minimum retention period for the scroll cursor. After
+            this time period, a pagination request might fail because the scroll cursor
+            is no longer available. Subsequent scroll requests prolong the lifetime of
+            the scroll cursor by the duration of `page_timeout` in the scroll request.
+        :param params: The values for parameters in the query.
+        :param query: The SQL query to run.
         :param request_timeout: The timeout before the request fails.
-        :param runtime_mappings: Defines one or more runtime fields in the search request.
-            These fields take precedence over mapped fields with the same name.
-        :param time_zone: ISO-8601 time zone ID for the search.
-        :param wait_for_completion_timeout: Period to wait for complete results. Defaults
-            to no timeout, meaning the request waits for complete search results. If
-            the search doesn’t finish within this period, the search becomes async.
+        :param runtime_mappings: One or more runtime fields for the search request. These
+            fields take precedence over mapped fields with the same name.
+        :param time_zone: The ISO-8601 time zone ID for the search.
+        :param wait_for_completion_timeout: The period to wait for complete results.
+            It defaults to no timeout, meaning the request waits for complete search
+            results. If the search doesn't finish within this period, the search becomes
+            async. To save a synchronous search, you must specify this parameter and
+            the `keep_on_completion` parameter.
         """
         __path_parts: t.Dict[str, str] = {}
         __path = "/_sql"
@@ -323,6 +358,8 @@ class SqlClient(NamespacedClient):
         if pretty is not None:
             __query["pretty"] = pretty
         if not __body:
+            if allow_partial_search_results is not None:
+                __body["allow_partial_search_results"] = allow_partial_search_results
             if catalog is not None:
                 __body["catalog"] = catalog
             if columnar is not None:
@@ -383,15 +420,19 @@ class SqlClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Translate SQL into Elasticsearch queries. Translate an SQL search into a search
-        API request containing Query DSL.
+        .. raw:: html
+
+          <p>Translate SQL into Elasticsearch queries.
+          Translate an SQL search into a search API request containing Query DSL.
+          It accepts the same request body parameters as the SQL search API, excluding <code>cursor</code>.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/sql-translate-api.html>`_
 
-        :param query: SQL query to run.
+        :param query: The SQL query to run.
         :param fetch_size: The maximum number of rows (or entries) to return in one response.
-        :param filter: Elasticsearch query DSL for additional filtering.
-        :param time_zone: ISO-8601 time zone ID for the search.
+        :param filter: The Elasticsearch query DSL for additional filtering.
+        :param time_zone: The ISO-8601 time zone ID for the search.
         """
         if query is None and body is None:
             raise ValueError("Empty value passed for parameter 'query'")

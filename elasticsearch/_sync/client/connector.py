@@ -43,8 +43,11 @@ class ConnectorClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Check in a connector. Update the `last_seen` field in the connector and set it
-        to the current timestamp.
+        .. raw:: html
+
+          <p>Check in a connector.</p>
+          <p>Update the <code>last_seen</code> field in the connector and set it to the current timestamp.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/check-in-connector-api.html>`_
 
@@ -82,20 +85,26 @@ class ConnectorClient(NamespacedClient):
         delete_sync_jobs: t.Optional[bool] = None,
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
+        hard: t.Optional[bool] = None,
         human: t.Optional[bool] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Delete a connector. Removes a connector and associated sync jobs. This is a destructive
-        action that is not recoverable. NOTE: This action doesn’t delete any API keys,
-        ingest pipelines, or data indices associated with the connector. These need to
-        be removed manually.
+        .. raw:: html
+
+          <p>Delete a connector.</p>
+          <p>Removes a connector and associated sync jobs.
+          This is a destructive action that is not recoverable.
+          NOTE: This action doesn’t delete any API keys, ingest pipelines, or data indices associated with the connector.
+          These need to be removed manually.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-connector-api.html>`_
 
         :param connector_id: The unique identifier of the connector to be deleted
         :param delete_sync_jobs: A flag indicating if associated sync jobs should be
             also removed. Defaults to false.
+        :param hard: A flag indicating if the connector should be hard deleted.
         """
         if connector_id in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'connector_id'")
@@ -108,6 +117,8 @@ class ConnectorClient(NamespacedClient):
             __query["error_trace"] = error_trace
         if filter_path is not None:
             __query["filter_path"] = filter_path
+        if hard is not None:
+            __query["hard"] = hard
         if human is not None:
             __query["human"] = human
         if pretty is not None:
@@ -131,14 +142,21 @@ class ConnectorClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        include_deleted: t.Optional[bool] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get a connector. Get the details about a connector.
+        .. raw:: html
+
+          <p>Get a connector.</p>
+          <p>Get the details about a connector.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-connector-api.html>`_
 
         :param connector_id: The unique identifier of the connector
+        :param include_deleted: A flag to indicate if the desired connector should be
+            fetched, even if it was soft-deleted.
         """
         if connector_id in SKIP_IN_PATH:
             raise ValueError("Empty value passed for parameter 'connector_id'")
@@ -151,6 +169,8 @@ class ConnectorClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if include_deleted is not None:
+            __query["include_deleted"] = include_deleted
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -229,8 +249,12 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector last sync stats. Update the fields related to the last sync
-        of a connector. This action is used for analytics and monitoring.
+        .. raw:: html
+
+          <p>Update the connector last sync stats.</p>
+          <p>Update the fields related to the last sync of a connector.
+          This action is used for analytics and monitoring.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-last-sync-api.html>`_
 
@@ -318,6 +342,7 @@ class ConnectorClient(NamespacedClient):
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         from_: t.Optional[int] = None,
         human: t.Optional[bool] = None,
+        include_deleted: t.Optional[bool] = None,
         index_name: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         pretty: t.Optional[bool] = None,
         query: t.Optional[str] = None,
@@ -325,13 +350,19 @@ class ConnectorClient(NamespacedClient):
         size: t.Optional[int] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get all connectors. Get information about all connectors.
+        .. raw:: html
+
+          <p>Get all connectors.</p>
+          <p>Get information about all connectors.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/list-connector-api.html>`_
 
         :param connector_name: A comma-separated list of connector names to fetch connector
             documents for
         :param from_: Starting offset (default: 0)
+        :param include_deleted: A flag to indicate if the desired connector should be
+            fetched, even if it was soft-deleted.
         :param index_name: A comma-separated list of connector index names to fetch connector
             documents for
         :param query: A wildcard query string that filters connectors with matching name,
@@ -353,6 +384,8 @@ class ConnectorClient(NamespacedClient):
             __query["from"] = from_
         if human is not None:
             __query["human"] = human
+        if include_deleted is not None:
+            __query["include_deleted"] = include_deleted
         if index_name is not None:
             __query["index_name"] = index_name
         if pretty is not None:
@@ -400,11 +433,13 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Create a connector. Connectors are Elasticsearch integrations that bring content
-        from third-party data sources, which can be deployed on Elastic Cloud or hosted
-        on your own infrastructure. Elastic managed connectors (Native connectors) are
-        a managed service on Elastic Cloud. Self-managed connectors (Connector clients)
-        are self-managed on your infrastructure.
+        .. raw:: html
+
+          <p>Create a connector.</p>
+          <p>Connectors are Elasticsearch integrations that bring content from third-party data sources, which can be deployed on Elastic Cloud or hosted on your own infrastructure.
+          Elastic managed connectors (Native connectors) are a managed service on Elastic Cloud.
+          Self-managed connectors (Connector clients) are self-managed on your infrastructure.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/create-connector-api.html>`_
 
@@ -483,7 +518,10 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Create or update a connector.
+        .. raw:: html
+
+          <p>Create or update a connector.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/create-connector-api.html>`_
 
@@ -553,10 +591,12 @@ class ConnectorClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Cancel a connector sync job. Cancel a connector sync job, which sets the status
-        to cancelling and updates `cancellation_requested_at` to the current time. The
-        connector service is then responsible for setting the status of connector sync
-        jobs to cancelled.
+        .. raw:: html
+
+          <p>Cancel a connector sync job.</p>
+          <p>Cancel a connector sync job, which sets the status to cancelling and updates <code>cancellation_requested_at</code> to the current time.
+          The connector service is then responsible for setting the status of connector sync jobs to cancelled.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/cancel-connector-sync-job-api.html>`_
 
@@ -601,11 +641,13 @@ class ConnectorClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Check in a connector sync job. Check in a connector sync job and set the `last_seen`
-        field to the current time before updating it in the internal index. To sync data
-        using self-managed connectors, you need to deploy the Elastic connector service
-        on your own infrastructure. This service runs automatically on Elastic Cloud
-        for Elastic managed connectors.
+        .. raw:: html
+
+          <p>Check in a connector sync job.
+          Check in a connector sync job and set the <code>last_seen</code> field to the current time before updating it in the internal index.</p>
+          <p>To sync data using self-managed connectors, you need to deploy the Elastic connector service on your own infrastructure.
+          This service runs automatically on Elastic Cloud for Elastic managed connectors.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/check-in-connector-sync-job-api.html>`_
 
@@ -656,14 +698,16 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Claim a connector sync job. This action updates the job status to `in_progress`
-        and sets the `last_seen` and `started_at` timestamps to the current time. Additionally,
-        it can set the `sync_cursor` property for the sync job. This API is not intended
-        for direct connector management by users. It supports the implementation of services
-        that utilize the connector protocol to communicate with Elasticsearch. To sync
-        data using self-managed connectors, you need to deploy the Elastic connector
-        service on your own infrastructure. This service runs automatically on Elastic
-        Cloud for Elastic managed connectors.
+        .. raw:: html
+
+          <p>Claim a connector sync job.
+          This action updates the job status to <code>in_progress</code> and sets the <code>last_seen</code> and <code>started_at</code> timestamps to the current time.
+          Additionally, it can set the <code>sync_cursor</code> property for the sync job.</p>
+          <p>This API is not intended for direct connector management by users.
+          It supports the implementation of services that utilize the connector protocol to communicate with Elasticsearch.</p>
+          <p>To sync data using self-managed connectors, you need to deploy the Elastic connector service on your own infrastructure.
+          This service runs automatically on Elastic Cloud for Elastic managed connectors.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/claim-connector-sync-job-api.html>`_
 
@@ -720,8 +764,12 @@ class ConnectorClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Delete a connector sync job. Remove a connector sync job and its associated data.
-        This is a destructive action that is not recoverable.
+        .. raw:: html
+
+          <p>Delete a connector sync job.</p>
+          <p>Remove a connector sync job and its associated data.
+          This is a destructive action that is not recoverable.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-connector-sync-job-api.html>`_
 
@@ -769,10 +817,13 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Set a connector sync job error. Set the `error` field for a connector sync job
-        and set its `status` to `error`. To sync data using self-managed connectors,
-        you need to deploy the Elastic connector service on your own infrastructure.
-        This service runs automatically on Elastic Cloud for Elastic managed connectors.
+        .. raw:: html
+
+          <p>Set a connector sync job error.
+          Set the <code>error</code> field for a connector sync job and set its <code>status</code> to <code>error</code>.</p>
+          <p>To sync data using self-managed connectors, you need to deploy the Elastic connector service on your own infrastructure.
+          This service runs automatically on Elastic Cloud for Elastic managed connectors.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/set-connector-sync-job-error-api.html>`_
 
@@ -823,7 +874,10 @@ class ConnectorClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get a connector sync job.
+        .. raw:: html
+
+          <p>Get a connector sync job.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-connector-sync-job-api.html>`_
 
@@ -892,8 +946,11 @@ class ConnectorClient(NamespacedClient):
         ] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get all connector sync jobs. Get information about all stored connector sync
-        jobs listed by their creation date in ascending order.
+        .. raw:: html
+
+          <p>Get all connector sync jobs.</p>
+          <p>Get information about all stored connector sync jobs listed by their creation date in ascending order.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/list-connector-sync-jobs-api.html>`_
 
@@ -955,8 +1012,11 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Create a connector sync job. Create a connector sync job document in the internal
-        index and initialize its counters and timestamps with default values.
+        .. raw:: html
+
+          <p>Create a connector sync job.</p>
+          <p>Create a connector sync job document in the internal index and initialize its counters and timestamps with default values.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/create-connector-sync-job-api.html>`_
 
@@ -996,6 +1056,109 @@ class ConnectorClient(NamespacedClient):
             path_parts=__path_parts,
         )
 
+    @_rewrite_parameters(
+        body_fields=(
+            "deleted_document_count",
+            "indexed_document_count",
+            "indexed_document_volume",
+            "last_seen",
+            "metadata",
+            "total_document_count",
+        ),
+    )
+    @_stability_warning(Stability.EXPERIMENTAL)
+    def sync_job_update_stats(
+        self,
+        *,
+        connector_sync_job_id: str,
+        deleted_document_count: t.Optional[int] = None,
+        indexed_document_count: t.Optional[int] = None,
+        indexed_document_volume: t.Optional[int] = None,
+        error_trace: t.Optional[bool] = None,
+        filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
+        human: t.Optional[bool] = None,
+        last_seen: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
+        metadata: t.Optional[t.Mapping[str, t.Any]] = None,
+        pretty: t.Optional[bool] = None,
+        total_document_count: t.Optional[int] = None,
+        body: t.Optional[t.Dict[str, t.Any]] = None,
+    ) -> ObjectApiResponse[t.Any]:
+        """
+        .. raw:: html
+
+          <p>Set the connector sync job stats.
+          Stats include: <code>deleted_document_count</code>, <code>indexed_document_count</code>, <code>indexed_document_volume</code>, and <code>total_document_count</code>.
+          You can also update <code>last_seen</code>.
+          This API is mainly used by the connector service for updating sync job information.</p>
+          <p>To sync data using self-managed connectors, you need to deploy the Elastic connector service on your own infrastructure.
+          This service runs automatically on Elastic Cloud for Elastic managed connectors.</p>
+
+
+        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/set-connector-sync-job-stats-api.html>`_
+
+        :param connector_sync_job_id: The unique identifier of the connector sync job.
+        :param deleted_document_count: The number of documents the sync job deleted.
+        :param indexed_document_count: The number of documents the sync job indexed.
+        :param indexed_document_volume: The total size of the data (in MiB) the sync
+            job indexed.
+        :param last_seen: The timestamp to use in the `last_seen` property for the connector
+            sync job.
+        :param metadata: The connector-specific metadata.
+        :param total_document_count: The total number of documents in the target index
+            after the sync job finished.
+        """
+        if connector_sync_job_id in SKIP_IN_PATH:
+            raise ValueError("Empty value passed for parameter 'connector_sync_job_id'")
+        if deleted_document_count is None and body is None:
+            raise ValueError(
+                "Empty value passed for parameter 'deleted_document_count'"
+            )
+        if indexed_document_count is None and body is None:
+            raise ValueError(
+                "Empty value passed for parameter 'indexed_document_count'"
+            )
+        if indexed_document_volume is None and body is None:
+            raise ValueError(
+                "Empty value passed for parameter 'indexed_document_volume'"
+            )
+        __path_parts: t.Dict[str, str] = {
+            "connector_sync_job_id": _quote(connector_sync_job_id)
+        }
+        __path = f'/_connector/_sync_job/{__path_parts["connector_sync_job_id"]}/_stats'
+        __query: t.Dict[str, t.Any] = {}
+        __body: t.Dict[str, t.Any] = body if body is not None else {}
+        if error_trace is not None:
+            __query["error_trace"] = error_trace
+        if filter_path is not None:
+            __query["filter_path"] = filter_path
+        if human is not None:
+            __query["human"] = human
+        if pretty is not None:
+            __query["pretty"] = pretty
+        if not __body:
+            if deleted_document_count is not None:
+                __body["deleted_document_count"] = deleted_document_count
+            if indexed_document_count is not None:
+                __body["indexed_document_count"] = indexed_document_count
+            if indexed_document_volume is not None:
+                __body["indexed_document_volume"] = indexed_document_volume
+            if last_seen is not None:
+                __body["last_seen"] = last_seen
+            if metadata is not None:
+                __body["metadata"] = metadata
+            if total_document_count is not None:
+                __body["total_document_count"] = total_document_count
+        __headers = {"accept": "application/json", "content-type": "application/json"}
+        return self.perform_request(  # type: ignore[return-value]
+            "PUT",
+            __path,
+            params=__query,
+            headers=__headers,
+            body=__body,
+            endpoint_id="connector.sync_job_update_stats",
+            path_parts=__path_parts,
+        )
+
     @_rewrite_parameters()
     @_stability_warning(Stability.EXPERIMENTAL)
     def update_active_filtering(
@@ -1008,8 +1171,11 @@ class ConnectorClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Activate the connector draft filter. Activates the valid draft filtering for
-        a connector.
+        .. raw:: html
+
+          <p>Activate the connector draft filter.</p>
+          <p>Activates the valid draft filtering for a connector.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-filtering-api.html>`_
 
@@ -1055,11 +1221,14 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector API key ID. Update the `api_key_id` and `api_key_secret_id`
-        fields of a connector. You can specify the ID of the API key used for authorization
-        and the ID of the connector secret where the API key is stored. The connector
-        secret ID is required only for Elastic managed (native) connectors. Self-managed
-        connectors (connector clients) do not use this field.
+        .. raw:: html
+
+          <p>Update the connector API key ID.</p>
+          <p>Update the <code>api_key_id</code> and <code>api_key_secret_id</code> fields of a connector.
+          You can specify the ID of the API key used for authorization and the ID of the connector secret where the API key is stored.
+          The connector secret ID is required only for Elastic managed (native) connectors.
+          Self-managed connectors (connector clients) do not use this field.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-api-key-id-api.html>`_
 
@@ -1114,8 +1283,11 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector configuration. Update the configuration field in the connector
-        document.
+        .. raw:: html
+
+          <p>Update the connector configuration.</p>
+          <p>Update the configuration field in the connector document.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-configuration-api.html>`_
 
@@ -1169,10 +1341,13 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector error field. Set the error field for the connector. If the
-        error provided in the request body is non-null, the connector’s status is updated
-        to error. Otherwise, if the error is reset to null, the connector status is updated
-        to connected.
+        .. raw:: html
+
+          <p>Update the connector error field.</p>
+          <p>Set the error field for the connector.
+          If the error provided in the request body is non-null, the connector’s status is updated to error.
+          Otherwise, if the error is reset to null, the connector status is updated to connected.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-error-api.html>`_
 
@@ -1225,14 +1400,22 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector features. Update the connector features in the connector
-        document. This API can be used to control the following aspects of a connector:
-        * document-level security * incremental syncs * advanced sync rules * basic sync
-        rules Normally, the running connector service automatically manages these features.
-        However, you can use this API to override the default behavior. To sync data
-        using self-managed connectors, you need to deploy the Elastic connector service
-        on your own infrastructure. This service runs automatically on Elastic Cloud
-        for Elastic managed connectors.
+        .. raw:: html
+
+          <p>Update the connector features.
+          Update the connector features in the connector document.
+          This API can be used to control the following aspects of a connector:</p>
+          <ul>
+          <li>document-level security</li>
+          <li>incremental syncs</li>
+          <li>advanced sync rules</li>
+          <li>basic sync rules</li>
+          </ul>
+          <p>Normally, the running connector service automatically manages these features.
+          However, you can use this API to override the default behavior.</p>
+          <p>To sync data using self-managed connectors, you need to deploy the Elastic connector service on your own infrastructure.
+          This service runs automatically on Elastic Cloud for Elastic managed connectors.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-features-api.html>`_
 
@@ -1287,10 +1470,13 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector filtering. Update the draft filtering configuration of a
-        connector and marks the draft validation state as edited. The filtering draft
-        is activated once validated by the running Elastic connector service. The filtering
-        property is used to configure sync rules (both basic and advanced) for a connector.
+        .. raw:: html
+
+          <p>Update the connector filtering.</p>
+          <p>Update the draft filtering configuration of a connector and marks the draft validation state as edited.
+          The filtering draft is activated once validated by the running Elastic connector service.
+          The filtering property is used to configure sync rules (both basic and advanced) for a connector.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-filtering-api.html>`_
 
@@ -1347,8 +1533,11 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector draft filtering validation. Update the draft filtering validation
-        info for a connector.
+        .. raw:: html
+
+          <p>Update the connector draft filtering validation.</p>
+          <p>Update the draft filtering validation info for a connector.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-filtering-validation-api.html>`_
 
@@ -1401,8 +1590,11 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector index name. Update the `index_name` field of a connector,
-        specifying the index where the data ingested by the connector is stored.
+        .. raw:: html
+
+          <p>Update the connector index name.</p>
+          <p>Update the <code>index_name</code> field of a connector, specifying the index where the data ingested by the connector is stored.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-index-name-api.html>`_
 
@@ -1456,7 +1648,10 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector name and description.
+        .. raw:: html
+
+          <p>Update the connector name and description.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-name-description-api.html>`_
 
@@ -1510,7 +1705,10 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector is_native flag.
+        .. raw:: html
+
+          <p>Update the connector is_native flag.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-native-api.html>`_
 
@@ -1563,8 +1761,11 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector pipeline. When you create a new connector, the configuration
-        of an ingest pipeline is populated with default settings.
+        .. raw:: html
+
+          <p>Update the connector pipeline.</p>
+          <p>When you create a new connector, the configuration of an ingest pipeline is populated with default settings.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-pipeline-api.html>`_
 
@@ -1617,7 +1818,10 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector scheduling.
+        .. raw:: html
+
+          <p>Update the connector scheduling.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-scheduling-api.html>`_
 
@@ -1670,7 +1874,10 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector service type.
+        .. raw:: html
+
+          <p>Update the connector service type.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-service-type-api.html>`_
 
@@ -1730,7 +1937,10 @@ class ConnectorClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Update the connector status.
+        .. raw:: html
+
+          <p>Update the connector status.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/update-connector-status-api.html>`_
 

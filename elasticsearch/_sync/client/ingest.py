@@ -38,8 +38,11 @@ class IngestClient(NamespacedClient):
         timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Delete GeoIP database configurations. Delete one or more IP geolocation database
-        configurations.
+        .. raw:: html
+
+          <p>Delete GeoIP database configurations.
+          Delete one or more IP geolocation database configurations.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-geoip-database-api.html>`_
 
@@ -90,7 +93,10 @@ class IngestClient(NamespacedClient):
         timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Delete IP geolocation database configurations.
+        .. raw:: html
+
+          <p>Delete IP geolocation database configurations.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-ip-location-database-api.html>`_
 
@@ -143,7 +149,11 @@ class IngestClient(NamespacedClient):
         timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Delete pipelines. Delete one or more ingest pipelines.
+        .. raw:: html
+
+          <p>Delete pipelines.
+          Delete one or more ingest pipelines.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-pipeline-api.html>`_
 
@@ -192,8 +202,11 @@ class IngestClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get GeoIP statistics. Get download statistics for GeoIP2 databases that are used
-        with the GeoIP processor.
+        .. raw:: html
+
+          <p>Get GeoIP statistics.
+          Get download statistics for GeoIP2 databases that are used with the GeoIP processor.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/geoip-processor.html>`_
         """
@@ -226,21 +239,20 @@ class IngestClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
-        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get GeoIP database configurations. Get information about one or more IP geolocation
-        database configurations.
+        .. raw:: html
+
+          <p>Get GeoIP database configurations.
+          Get information about one or more IP geolocation database configurations.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-geoip-database-api.html>`_
 
         :param id: Comma-separated list of database configuration IDs to retrieve. Wildcard
             (`*`) expressions are supported. To get all database configurations, omit
             this parameter or use `*`.
-        :param master_timeout: Period to wait for a connection to the master node. If
-            no response is received before the timeout expires, the request fails and
-            returns an error.
         """
         __path_parts: t.Dict[str, str]
         if id not in SKIP_IN_PATH:
@@ -256,8 +268,6 @@ class IngestClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
-        if master_timeout is not None:
-            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -282,7 +292,10 @@ class IngestClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get IP geolocation database configurations.
+        .. raw:: html
+
+          <p>Get IP geolocation database configurations.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-ip-location-database-api.html>`_
 
@@ -335,8 +348,12 @@ class IngestClient(NamespacedClient):
         summary: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get pipelines. Get information about one or more ingest pipelines. This API returns
-        a local reference of the pipeline.
+        .. raw:: html
+
+          <p>Get pipelines.
+          Get information about one or more ingest pipelines.
+          This API returns a local reference of the pipeline.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-pipeline-api.html>`_
 
@@ -387,10 +404,13 @@ class IngestClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Run a grok processor. Extract structured fields out of a single text field within
-        a document. You must choose which field to extract matched fields from, as well
-        as the grok pattern you expect will match. A grok pattern is like a regular expression
-        that supports aliased expressions that can be reused.
+        .. raw:: html
+
+          <p>Run a grok processor.
+          Extract structured fields out of a single text field within a document.
+          You must choose which field to extract matched fields from, as well as the grok pattern you expect will match.
+          A grok pattern is like a regular expression that supports aliased expressions that can be reused.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/grok-processor.html>`_
         """
@@ -433,8 +453,11 @@ class IngestClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Create or update a GeoIP database configuration. Refer to the create or update
-        IP geolocation database configuration API.
+        .. raw:: html
+
+          <p>Create or update a GeoIP database configuration.
+          Refer to the create or update IP geolocation database configuration API.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/put-geoip-database-api.html>`_
 
@@ -506,7 +529,10 @@ class IngestClient(NamespacedClient):
         timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Create or update an IP geolocation database configuration.
+        .. raw:: html
+
+          <p>Create or update an IP geolocation database configuration.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/put-ip-location-database-api.html>`_
 
@@ -588,7 +614,11 @@ class IngestClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Create or update a pipeline. Changes made using this API take effect immediately.
+        .. raw:: html
+
+          <p>Create or update a pipeline.
+          Changes made using this API take effect immediately.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/ingest.html>`_
 
@@ -680,9 +710,12 @@ class IngestClient(NamespacedClient):
         body: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Simulate a pipeline. Run an ingest pipeline against a set of provided documents.
-        You can either specify an existing pipeline to use with the provided documents
-        or supply a pipeline definition in the body of the request.
+        .. raw:: html
+
+          <p>Simulate a pipeline.
+          Run an ingest pipeline against a set of provided documents.
+          You can either specify an existing pipeline to use with the provided documents or supply a pipeline definition in the body of the request.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/simulate-pipeline-api.html>`_
 

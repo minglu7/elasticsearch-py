@@ -39,12 +39,14 @@ class DanglingIndicesClient(NamespacedClient):
         timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Delete a dangling index. If Elasticsearch encounters index data that is absent
-        from the current cluster state, those indices are considered to be dangling.
-        For example, this can happen if you delete more than `cluster.indices.tombstones.size`
-        indices while an Elasticsearch node is offline.
+        .. raw:: html
 
-        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-gateway-dangling-indices.html>`_
+          <p>Delete a dangling index.
+          If Elasticsearch encounters index data that is absent from the current cluster state, those indices are considered to be dangling.
+          For example, this can happen if you delete more than <code>cluster.indices.tombstones.size</code> indices while an Elasticsearch node is offline.</p>
+
+
+        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/dangling-index-delete.html>`_
 
         :param index_uuid: The UUID of the index to delete. Use the get dangling indices
             API to find the UUID.
@@ -98,12 +100,14 @@ class DanglingIndicesClient(NamespacedClient):
         timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Import a dangling index. If Elasticsearch encounters index data that is absent
-        from the current cluster state, those indices are considered to be dangling.
-        For example, this can happen if you delete more than `cluster.indices.tombstones.size`
-        indices while an Elasticsearch node is offline.
+        .. raw:: html
 
-        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-gateway-dangling-indices.html>`_
+          <p>Import a dangling index.</p>
+          <p>If Elasticsearch encounters index data that is absent from the current cluster state, those indices are considered to be dangling.
+          For example, this can happen if you delete more than <code>cluster.indices.tombstones.size</code> indices while an Elasticsearch node is offline.</p>
+
+
+        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/dangling-index-import.html>`_
 
         :param index_uuid: The UUID of the index to import. Use the get dangling indices
             API to locate the UUID.
@@ -156,13 +160,15 @@ class DanglingIndicesClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get the dangling indices. If Elasticsearch encounters index data that is absent
-        from the current cluster state, those indices are considered to be dangling.
-        For example, this can happen if you delete more than `cluster.indices.tombstones.size`
-        indices while an Elasticsearch node is offline. Use this API to list dangling
-        indices, which you can then import or delete.
+        .. raw:: html
 
-        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-gateway-dangling-indices.html>`_
+          <p>Get the dangling indices.</p>
+          <p>If Elasticsearch encounters index data that is absent from the current cluster state, those indices are considered to be dangling.
+          For example, this can happen if you delete more than <code>cluster.indices.tombstones.size</code> indices while an Elasticsearch node is offline.</p>
+          <p>Use this API to list dangling indices, which you can then import or delete.</p>
+
+
+        `<https://www.elastic.co/guide/en/elasticsearch/reference/master/dangling-indices-list.html>`_
         """
         __path_parts: t.Dict[str, str] = {}
         __path = "/_dangling"

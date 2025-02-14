@@ -43,10 +43,16 @@ class XPackClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get information. The information provided by the API includes: * Build information
-        including the build number and timestamp. * License information about the currently
-        installed license. * Feature information for the features that are currently
-        enabled and available under the current license.
+        .. raw:: html
+
+          <p>Get information.
+          The information provided by the API includes:</p>
+          <ul>
+          <li>Build information including the build number and timestamp.</li>
+          <li>License information about the currently installed license.</li>
+          <li>Feature information for the features that are currently enabled and available under the current license.</li>
+          </ul>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/info-api.html>`_
 
@@ -90,15 +96,19 @@ class XPackClient(NamespacedClient):
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get usage information. Get information about the features that are currently
-        enabled and available under the current license. The API also provides some usage
-        statistics.
+        .. raw:: html
+
+          <p>Get usage information.
+          Get information about the features that are currently enabled and available under the current license.
+          The API also provides some usage statistics.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/usage-api.html>`_
 
-        :param master_timeout: Period to wait for a connection to the master node. If
-            no response is received before the timeout expires, the request fails and
-            returns an error.
+        :param master_timeout: The period to wait for a connection to the master node.
+            If no response is received before the timeout expires, the request fails
+            and returns an error. To indicate that the request should never timeout,
+            set it to `-1`.
         """
         __path_parts: t.Dict[str, str] = {}
         __path = "/_xpack/usage"

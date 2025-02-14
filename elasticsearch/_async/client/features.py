@@ -32,22 +32,25 @@ class FeaturesClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Get the features. Get a list of features that can be included in snapshots using
-        the `feature_states` field when creating a snapshot. You can use this API to
-        determine which feature states to include when taking a snapshot. By default,
-        all feature states are included in a snapshot if that snapshot includes the global
-        state, or none if it does not. A feature state includes one or more system indices
-        necessary for a given feature to function. In order to ensure data integrity,
-        all system indices that comprise a feature state are snapshotted and restored
-        together. The features listed by this API are a combination of built-in features
-        and features defined by plugins. In order for a feature state to be listed in
-        this API and recognized as a valid feature state by the create snapshot API,
-        the plugin that defines that feature must be installed on the master node.
+        .. raw:: html
+
+          <p>Get the features.
+          Get a list of features that can be included in snapshots using the <code>feature_states</code> field when creating a snapshot.
+          You can use this API to determine which feature states to include when taking a snapshot.
+          By default, all feature states are included in a snapshot if that snapshot includes the global state, or none if it does not.</p>
+          <p>A feature state includes one or more system indices necessary for a given feature to function.
+          In order to ensure data integrity, all system indices that comprise a feature state are snapshotted and restored together.</p>
+          <p>The features listed by this API are a combination of built-in features and features defined by plugins.
+          In order for a feature state to be listed in this API and recognized as a valid feature state by the create snapshot API, the plugin that defines that feature must be installed on the master node.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/get-features-api.html>`_
+
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         __path_parts: t.Dict[str, str] = {}
         __path = "/_features"
@@ -58,6 +61,8 @@ class FeaturesClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
@@ -78,25 +83,28 @@ class FeaturesClient(NamespacedClient):
         error_trace: t.Optional[bool] = None,
         filter_path: t.Optional[t.Union[str, t.Sequence[str]]] = None,
         human: t.Optional[bool] = None,
+        master_timeout: t.Optional[t.Union[str, t.Literal[-1], t.Literal[0]]] = None,
         pretty: t.Optional[bool] = None,
     ) -> ObjectApiResponse[t.Any]:
         """
-        Reset the features. Clear all of the state information stored in system indices
-        by Elasticsearch features, including the security and machine learning indices.
-        WARNING: Intended for development and testing use only. Do not reset features
-        on a production cluster. Return a cluster to the same state as a new installation
-        by resetting the feature state for all Elasticsearch features. This deletes all
-        state information stored in system indices. The response code is HTTP 200 if
-        the state is successfully reset for all features. It is HTTP 500 if the reset
-        operation failed for any feature. Note that select features might provide a way
-        to reset particular system indices. Using this API resets all features, both
-        those that are built-in and implemented as plugins. To list the features that
-        will be affected, use the get features API. IMPORTANT: The features installed
-        on the node you submit this request to are the features that will be reset. Run
-        on the master node if you have any doubts about which plugins are installed on
-        individual nodes.
+        .. raw:: html
+
+          <p>Reset the features.
+          Clear all of the state information stored in system indices by Elasticsearch features, including the security and machine learning indices.</p>
+          <p>WARNING: Intended for development and testing use only. Do not reset features on a production cluster.</p>
+          <p>Return a cluster to the same state as a new installation by resetting the feature state for all Elasticsearch features.
+          This deletes all state information stored in system indices.</p>
+          <p>The response code is HTTP 200 if the state is successfully reset for all features.
+          It is HTTP 500 if the reset operation failed for any feature.</p>
+          <p>Note that select features might provide a way to reset particular system indices.
+          Using this API resets all features, both those that are built-in and implemented as plugins.</p>
+          <p>To list the features that will be affected, use the get features API.</p>
+          <p>IMPORTANT: The features installed on the node you submit this request to are the features that will be reset. Run on the master node if you have any doubts about which plugins are installed on individual nodes.</p>
+
 
         `<https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
+
+        :param master_timeout: Period to wait for a connection to the master node.
         """
         __path_parts: t.Dict[str, str] = {}
         __path = "/_features/_reset"
@@ -107,6 +115,8 @@ class FeaturesClient(NamespacedClient):
             __query["filter_path"] = filter_path
         if human is not None:
             __query["human"] = human
+        if master_timeout is not None:
+            __query["master_timeout"] = master_timeout
         if pretty is not None:
             __query["pretty"] = pretty
         __headers = {"accept": "application/json"}
